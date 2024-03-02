@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tutorados_app/config/router/app_router_notifier.dart';
-import 'package:tutorados_app/presentation/providers/auth_provider.dart';
+import 'package:tutorados_app/presentation/providers/providers.dart';
 import 'package:tutorados_app/presentation/screens/screens.dart';
 
 final goRouterProvider = Provider((ref) {
@@ -30,13 +30,15 @@ final goRouterProvider = Provider((ref) {
       GoRoute(
         path: '/form',
         builder: (context, state) => const FormScreen(),
-      )
+      ),
     ],
     redirect: (context, state) {
       final isGoingTo = state.matchedLocation;
       final authStatus = goRouterNotifier.authStatus;
 
-      if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) return null;
+      if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
+        return null;
+      }
 
       if (authStatus == AuthStatus.notAuthenticated) {
         if (isGoingTo == '/login' || isGoingTo == '/register') return null;
@@ -49,7 +51,6 @@ final goRouterProvider = Provider((ref) {
             isGoingTo == '/register' ||
             isGoingTo == '/splash') return '/home';
       }
-
       return null;
     },
   );

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tutorados_app/presentation/providers/auth_provider.dart';
 import 'package:tutorados_app/presentation/providers/providers.dart';
 import 'package:tutorados_app/widgets/widgets.dart';
 
@@ -95,7 +94,7 @@ class LoginFormRegister extends ConsumerWidget {
                   : null,
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             CustomTextField(
               label: 'Apellido',
@@ -106,7 +105,18 @@ class LoginFormRegister extends ConsumerWidget {
                   : null,
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
+            ),
+            CustomTextField(
+              label: 'Matrícula',
+              onChanged:
+                  ref.read(registerFormProvider.notifier).onStudentEnrollmentChanged,
+              errorMessage: registerForm.isFormPosted
+                  ? registerForm.studentEnrollment.errorMessage
+                  : null,
+            ),
+            const SizedBox(
+              height: 10,
             ),
             CustomTextField(
               label: 'Correo electrónico',
@@ -116,7 +126,7 @@ class LoginFormRegister extends ConsumerWidget {
                   : null,
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             CustomTextField(
               label: 'Contraseña',
@@ -129,7 +139,7 @@ class LoginFormRegister extends ConsumerWidget {
               onFieldSubmitted: ( _ ) => ref.read(registerFormProvider.notifier).onFormSubmit(),
             ),
             const SizedBox(
-              height: 50,
+              height: 40,
             ),
             SizedBox(
                 width: double.infinity,
@@ -152,7 +162,7 @@ class LoginFormRegister extends ConsumerWidget {
                   ),
                 )),
             const SizedBox(
-              height: 50,
+              height: 40,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

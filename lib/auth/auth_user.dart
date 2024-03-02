@@ -10,12 +10,13 @@ class AuthUser {
     baseUrl: Environment.apiUrl,
   ));
 
-  Future<String> register(
-      String name, String lastName, String email, String password) async {
+  Future<String> register(String name, String lastName,
+      String studentEnrollment, String email, String password) async {
     try {
       final response = await dio.post('/user/register', data: {
         'name': name,
         'lastName': lastName,
+        'studentEnrollment': studentEnrollment,
         'email': email,
         'password': password,
         'roleName': 'Alumno',
@@ -24,6 +25,10 @@ class AuthUser {
       final userRegistred = response.data['message'];
       return userRegistred;
     } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw AuthError(error.response?.data['message'] ??
+            'Todos los campos son requeridos');
+      }
       if (error.response?.statusCode == 401) {
         throw AuthError(
             error.response?.data['message'] ?? 'El usuario ya está registrado');
@@ -43,16 +48,20 @@ class AuthUser {
     }
   }
 
-  Future<User> login(String email, String password) async {
+  Future<User> login(String identifier, String password) async {
     try {
       final response = await dio.post('/user/login', data: {
-        'email': email,
+        'identifier': identifier,
         'password': password,
       });
 
       final user = UserMapper.userJsonToEntity(response.data);
       return user;
     } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw AuthError(error.response?.data['message'] ??
+            'Todos los campos son requeridos');
+      }
       if (error.response?.statusCode == 401) {
         throw AuthError(
             error.response?.data['message'] ?? 'Credenciales incorrectas');
@@ -68,7 +77,7 @@ class AuthUser {
 
   Future<User> checkAuthStatus(String token) async {
     try {
-      final response = await dio.get('/user/user',
+      final response = await dio.get('/user/',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 
       final user = UserMapper.userJsonToEntity(response.data);

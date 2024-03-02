@@ -5,3 +5,6 @@ export 'contact_provider.dart';
 export 'second_student_data_provider.dart';
 export 'medical_data_provider.dart';
 export 'academic_data_provider.dart';
+export 'form_state_provider.dart';
+export 'auth_provider.dart';
+export 'code_provider.dart';

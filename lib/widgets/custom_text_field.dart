@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final String? initialValue;
   final TextEditingController? controller;
   final bool readOnly;
+  final bool enabled;
 
   const CustomTextField(
       {super.key,
@@ -21,11 +22,13 @@ class CustomTextField extends StatelessWidget {
       this.onFieldSubmitted,
       this.errorMessage,
       this.onTap,
-      this.initialValue, this.controller, this.readOnly = false});
+      this.initialValue, this.controller, this.readOnly = false,
+      this.enabled = true});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: enabled,
       onChanged: onChanged,
       obscureText: isObscureText,
       onFieldSubmitted: onFieldSubmitted,
@@ -44,6 +47,7 @@ class CustomTextField extends StatelessWidget {
         hintText: hint,
         label: label != null ? Text(label!) : null,
         errorText: errorMessage,
+        
       ),
     );
   }

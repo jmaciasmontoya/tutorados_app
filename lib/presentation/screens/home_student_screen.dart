@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tutorados_app/presentation/providers/auth_provider.dart';
+import 'package:tutorados_app/presentation/providers/providers.dart';
 import 'package:tutorados_app/widgets/widgets.dart';
 
 class HomeStudentScreen extends StatelessWidget {
@@ -80,11 +80,13 @@ class HomeStudentView extends ConsumerWidget {
   }
 }
 
-class SectionTutoring extends StatelessWidget {
+class SectionTutoring extends ConsumerWidget {
   const SectionTutoring({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final codeState = ref.watch(codeProvider);
+
     return SizedBox(
       height: 370,
       child: GridView.count(
@@ -105,6 +107,7 @@ class SectionTutoring extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
+              print(codeState.tutor?.id);
               context.push('/form');
             },
             child: const CardOption(

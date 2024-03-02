@@ -13,16 +13,17 @@ class FistSectionStudentDataState {
   final bool isPosting;
   final String message;
 
-  FistSectionStudentDataState(
-      {this.name = const Input.pure(),
-      this.lastName = const Input.pure(),
-      this.studentEnrollment = const Input.pure(),
-      this.gender = const Input.dirty('Masculino'),
-      this.career = const Input.dirty('Software'),
-      this.isValid = false,
-      this.isFormPosted = false,
-      this.isPosting = false,
-      this.message = ''});
+  FistSectionStudentDataState({
+    this.name = const Input.pure(),
+    this.lastName = const Input.pure(),
+    this.studentEnrollment = const Input.pure(),
+    this.gender = const Input.dirty('Masculino'),
+    this.career = const Input.dirty('Software'),
+    this.isValid = false,
+    this.isFormPosted = false,
+    this.isPosting = false,
+    this.message = '',
+  });
 
   FistSectionStudentDataState copyWith({
     Input? name,
@@ -36,15 +37,16 @@ class FistSectionStudentDataState {
     String? message,
   }) =>
       FistSectionStudentDataState(
-          name: name ?? this.name,
-          lastName: lastName ?? this.lastName,
-          studentEnrollment: studentEnrollment ?? this.studentEnrollment,
-          gender: gender ?? this.gender,
-          career: career ?? this.career,
-          isValid: isValid ?? this.isValid,
-          isFormPosted: isFormPosted ?? this.isFormPosted,
-          isPosting: isPosting ?? this.isPosting,
-          message: message ?? this.message);
+        name: name ?? this.name,
+        lastName: lastName ?? this.lastName,
+        studentEnrollment: studentEnrollment ?? this.studentEnrollment,
+        gender: gender ?? this.gender,
+        career: career ?? this.career,
+        isValid: isValid ?? this.isValid,
+        isFormPosted: isFormPosted ?? this.isFormPosted,
+        isPosting: isPosting ?? this.isPosting,
+        message: message ?? this.message,
+      );
 }
 
 class FistSectionStudentDataNotifier
@@ -75,6 +77,7 @@ class FistSectionStudentDataNotifier
     final newCareer = Input.dirty(value);
     state = state.copyWith(career: newCareer);
   }
+
 
   onFormSubmit() {
     _touchEveryField();

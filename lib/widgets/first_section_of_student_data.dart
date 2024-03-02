@@ -16,20 +16,23 @@ class FirstSectionOfStudentData extends ConsumerWidget {
         CustomTextField(
           label: 'Nombre',
           onChanged: ref.read(firstStudentDataProvider.notifier).onNameChanged,
-          errorMessage:
-              firstStudentData.isFormPosted ? firstStudentData.name.errorMessage : null,
+          errorMessage: firstStudentData.isFormPosted
+              ? firstStudentData.name.errorMessage
+              : null,
         ),
         CustomTextField(
           label: 'Apellido',
-          errorMessage:
-              firstStudentData.isFormPosted ? firstStudentData.lastName.errorMessage : null,
+          errorMessage: firstStudentData.isFormPosted
+              ? firstStudentData.lastName.errorMessage
+              : null,
           onChanged:
               ref.read(firstStudentDataProvider.notifier).onLastNameChanged,
         ),
         CustomTextField(
           label: 'Matrícula',
-          errorMessage:
-              firstStudentData.isFormPosted ? firstStudentData.studentEnrollment.errorMessage : null,
+          errorMessage: firstStudentData.isFormPosted
+              ? firstStudentData.studentEnrollment.errorMessage
+              : null,
           onChanged: ref
               .read(firstStudentDataProvider.notifier)
               .onStudentEnrollmentChanged,
@@ -85,7 +88,9 @@ class FirstSectionOfStudentData extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: ref.read(firstStudentDataProvider.notifier).onFormSubmit,
+              onPressed: ref.read(formProvider.notifier).changeSection,
+              // onPressed:
+              //     ref.read(firstStudentDataProvider.notifier).onFormSubmit,
               style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all<Color>(const Color(0xff5A4361)),

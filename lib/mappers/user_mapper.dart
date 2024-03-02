@@ -4,11 +4,11 @@ class UserMapper {
   static User userJsonToEntity(Map<String, dynamic> json ) => 
   
   User(
-    id: json['Usuario_Id'], 
-    name: json['Nombre'], 
-    lastName: json['Apellido'], 
-    email: json['Correo'], 
-    role: json['Rol'], 
-    token: json['Token']
+    id: json['usuario_id'], 
+    name: json['nombre'], 
+    lastName: json['apellido'], 
+    email: json['correo'], 
+    role: json['rol'], 
+    token: json['token']
     );
 }

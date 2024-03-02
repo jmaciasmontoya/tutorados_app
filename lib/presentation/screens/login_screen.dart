@@ -93,10 +93,10 @@ class LoginForm extends ConsumerWidget {
         child: Column(
           children: [
             CustomTextField(
-              label: 'Correo electrónico',
-              onChanged: ref.read(loginFormProvider.notifier).onEmailChange,
+              label: 'Matrícula o correo electrónico',
+              onChanged: ref.read(loginFormProvider.notifier).onIdentifierChanged,
               errorMessage:
-                  loginForm.isFormPosted ? loginForm.email.errorMessage : null,
+                  loginForm.isFormPosted ? loginForm.identifier.errorMessage : null,
             ),
             const SizedBox(
               height: 20,

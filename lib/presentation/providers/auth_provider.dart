@@ -35,9 +35,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     checkAuthStatus();
   }
 
-  Future<void> loginUser(String email, String password) async {
+  Future<void> loginUser(String identifier, String password) async {
     try {
-      final user = await authUser.login(email, password);
+      final user = await authUser.login(identifier, password);
       _setLoggedUser(user);
     } on AuthError catch (error) {
       logout(error.message);
@@ -46,11 +46,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  void registerUser(
-      String name, String lastName, String email, String password) async {
+  void registerUser(String name, String lastName, String studentEnrollment,
+      String email, String password) async {
     try {
       final userRegistred =
-          await authUser.register(name, lastName, email, password);
+          await authUser.register(name, lastName, studentEnrollment,  email, password);
       state = state.copyWith(
           message: userRegistred, authStatus: AuthStatus.newUserRegistred);
     } on AuthError catch (error) {

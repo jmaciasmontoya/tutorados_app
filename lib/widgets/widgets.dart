@@ -9,3 +9,4 @@ export 'socioeconomic_data_section.dart';
 export 'yes_or_no_option.dart';
 export 'academic_data_section.dart';
 export 'select_career.dart';
+export 'assign_tutor.dart';

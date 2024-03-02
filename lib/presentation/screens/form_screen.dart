@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorados_app/presentation/providers/providers.dart';
 import 'package:tutorados_app/widgets/widgets.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
-class FormScreen extends StatelessWidget {
+class FormScreen extends ConsumerWidget {
   const FormScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final codeState = ref.watch(codeProvider);
+    final formState = ref.watch(formProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff80608B),
@@ -18,25 +23,48 @@ class FormScreen extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Registro de tutorados',
+                const Text('Registro de tutorados',
                     style: TextStyle(
-                        color: Color(0xffffffff),
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold)),
-                Text(
-                  'Datos del estudiante',
-                  style: TextStyle(color: Color(0xffffffff), fontSize: 18),
+                      color: Color(0xffffffff),
+                      fontSize: 24,
+                    )),
+                const SizedBox(
+                  height: 10,
                 ),
+                (codeState.tutor != null)
+                    ? Text(
+                        'Tutor: ${codeState.tutor?.name} ${codeState.tutor?.lastName}',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold))
+                    : Container(),
+                const SizedBox(
+                  height: 10,
+                ),
+                LinearPercentIndicator(
+                  animation: true,
+                  animationDuration: 1000,
+                  percent: formState.loadingBar,
+                  progressColor: const Color(0xff5A4361),
+                  backgroundColor: const Color(0xffffffff),
+                  barRadius: const Radius.circular(10),
+                  trailing: Text(
+                    '${formState.percentageCompleted}%',
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
+                )
               ],
             ),
           ),
           const SizedBox(
-            height: 50,
+            height: 30,
           ),
           Expanded(
             child: Container(
@@ -53,7 +81,6 @@ class FormScreen extends StatelessWidget {
                   color: const Color(0xffffffff),
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(40),
-                      
                       topRight: Radius.circular(40))),
               child: const FormView(),
             ),
@@ -64,16 +91,34 @@ class FormScreen extends StatelessWidget {
   }
 }
 
-class FormView extends StatelessWidget {
+class FormView extends ConsumerWidget {
   const FormView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Form(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formState = ref.watch(formProvider);
+    return Form(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        child: SingleChildScrollView(child: FirstSectionOfStudentData()),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: SingleChildScrollView(child: renderView(formState.section)),
       ),
     );
+  }
+
+  renderView(int section) {
+    switch (section) {
+      case 0:
+        return const AssignTutor();
+      case 1:
+        return const FirstSectionOfStudentData();
+      case 2:
+        return const SecondSectionOfStudentData();
+      case 3:
+        return const ContactInformationSection();
+      case 4:
+        return const MedicalDataSection();
+      case 5:
+        return const SocioeconomicDataSection();
+    }
   }
 }

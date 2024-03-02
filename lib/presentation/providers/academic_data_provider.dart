@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:formz/formz.dart';
 import 'package:tutorados_app/inputs/inputs.dart';
 
 class AcademicDataState {
