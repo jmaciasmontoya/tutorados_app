@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final bool readOnly;
   final bool enabled;
+  final TextInputType keyboardType;
 
   const CustomTextField(
       {super.key,
@@ -22,11 +23,16 @@ class CustomTextField extends StatelessWidget {
       this.onFieldSubmitted,
       this.errorMessage,
       this.onTap,
-      this.initialValue, this.controller, this.readOnly = false,
-      this.enabled = true});
+      this.initialValue,
+      this.controller,
+      this.readOnly = false,
+      this.enabled = true,
+      this.keyboardType = TextInputType.text});
 
   @override
   Widget build(BuildContext context) {
+    const styleDisable = TextStyle(color: Color(0xFF7E7E7E));
+
     return TextFormField(
       enabled: enabled,
       onChanged: onChanged,
@@ -34,12 +40,14 @@ class CustomTextField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       initialValue: initialValue,
       controller: controller,
+      keyboardType: keyboardType,
       onTap: onTap,
       readOnly: readOnly,
-      style: const TextStyle(color: Color(0xff303030)),
+      style: enabled ? const TextStyle(color: Color(0xff303030)) : styleDisable,
       cursorColor: const Color(0xff5A4361),
       decoration: InputDecoration(
-        labelStyle: const TextStyle(color: Color(0xff303030)),
+        labelStyle:
+            enabled ? const TextStyle(color: Color(0xff303030)) : styleDisable,
         focusedBorder: const UnderlineInputBorder(
             borderSide: BorderSide(color: Color(0xff5A4361))),
         enabledBorder: const UnderlineInputBorder(
@@ -47,7 +55,6 @@ class CustomTextField extends StatelessWidget {
         hintText: hint,
         label: label != null ? Text(label!) : null,
         errorText: errorMessage,
-        
       ),
     );
   }

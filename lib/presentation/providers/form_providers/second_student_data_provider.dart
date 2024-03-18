@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:intl/intl.dart';
+import 'package:tutorados_app/form/form_student.dart';
 import 'package:tutorados_app/inputs/inputs.dart';
+import 'package:tutorados_app/presentation/providers/providers.dart';
 
 class SecondStudentDataState {
   final Input birthDate;
@@ -14,6 +16,7 @@ class SecondStudentDataState {
   final bool isValid;
   final bool isFormPosted;
   final bool isPosting;
+  final bool isCompleted;
 
   SecondStudentDataState(
       {this.birthDate = const Input.pure(),
@@ -24,7 +27,8 @@ class SecondStudentDataState {
       this.tutor = const Input.pure(),
       this.isValid = false,
       this.isFormPosted = false,
-      this.isPosting = false});
+      this.isPosting = false,
+      this.isCompleted = false});
 
   SecondStudentDataState copyWith({
     Input? birthDate,
@@ -36,6 +40,7 @@ class SecondStudentDataState {
     bool? isValid,
     bool? isFormPosted,
     bool? isPosting,
+    bool? isCompleted,
   }) =>
       SecondStudentDataState(
         birthDate: birthDate ?? this.birthDate,
@@ -47,13 +52,20 @@ class SecondStudentDataState {
         isValid: isValid ?? this.isValid,
         isFormPosted: isFormPosted ?? this.isFormPosted,
         isPosting: isPosting ?? this.isPosting,
+        isCompleted: isCompleted ?? this.isCompleted,
       );
 }
 
 class SecondStudentDataNotifier extends StateNotifier<SecondStudentDataState> {
   late TextEditingController birthDateController;
   late TextEditingController ageController;
-  SecondStudentDataNotifier() : super(SecondStudentDataState()) {
+  final FistSectionStudentDataState firstSection;
+  final FormStudent formStudent;
+
+  SecondStudentDataNotifier({
+    required this.firstSection,
+    required this.formStudent,
+  }) : super(SecondStudentDataState()) {
     birthDateController = TextEditingController();
     ageController = TextEditingController();
   }
@@ -109,29 +121,57 @@ class SecondStudentDataNotifier extends StateNotifier<SecondStudentDataState> {
 
   onFormSubmit() {
     _touchEveryField();
-    if (!state.isValid) return;
-    print('Enviando datos...');
 
+    if (!state.isValid) return;
+    state = state.copyWith(isPosting: true);
+    sendData();
+    state = state.copyWith(isPosting: false);
+  }
+
+  sendData() async {
+    try {
+      await formStudent.studentData(
+          firstSection.name.value,
+          firstSection.lastName.value,
+          firstSection.studentEnrollment.value,
+          firstSection.career.value,
+          firstSection.gender.value,
+          state.tutor.value,
+          state.birthDate.value,
+          state.age,
+          state.placeOfBirth.value,
+          state.religion.value,
+          state.activity.value);
+      state = state.copyWith(isCompleted: true);
+    } catch (e) {
+      state = state.copyWith(isCompleted: false);
+    }
   }
 
   _touchEveryField() {
     final birthDate = Input.dirty(state.birthDate.value);
     final placeOfBirth = Input.dirty(state.placeOfBirth.value);
-    final tutor = Input.dirty(state.tutor.value);    
+    final tutor = Input.dirty(state.tutor.value);
 
     state = state.copyWith(
       isFormPosted: true,
       birthDate: birthDate,
       placeOfBirth: placeOfBirth,
-      tutor: tutor, 
+      tutor: tutor,
       isValid: Formz.validate([birthDate, placeOfBirth, tutor]),
     );
-
   }
-
 }
 
-final secondStudentDataProvider = StateNotifierProvider.autoDispose<
-    SecondStudentDataNotifier, SecondStudentDataState>((ref) {
-  return SecondStudentDataNotifier();
+final secondStudentDataProvider =
+    StateNotifierProvider<SecondStudentDataNotifier, SecondStudentDataState>(
+        (ref) {
+  final firstSection = ref.watch(firstStudentDataProvider);
+  final accessToken = ref.watch(authProvider).user?.token ?? '';
+  final formStudent = FormStudent(accessToken: accessToken);
+
+  return SecondStudentDataNotifier(
+    firstSection: firstSection,
+    formStudent: formStudent,
+  );
 });

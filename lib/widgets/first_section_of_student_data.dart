@@ -9,12 +9,14 @@ class FirstSectionOfStudentData extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firstStudentData = ref.watch(firstStudentDataProvider);
+    final userState = ref.watch(authProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextField(
           label: 'Nombre',
+          initialValue: userState.user?.name,
           onChanged: ref.read(firstStudentDataProvider.notifier).onNameChanged,
           errorMessage: firstStudentData.isFormPosted
               ? firstStudentData.name.errorMessage
@@ -22,6 +24,7 @@ class FirstSectionOfStudentData extends ConsumerWidget {
         ),
         CustomTextField(
           label: 'Apellido',
+          initialValue: userState.user?.lastName,
           errorMessage: firstStudentData.isFormPosted
               ? firstStudentData.lastName.errorMessage
               : null,
@@ -29,7 +32,9 @@ class FirstSectionOfStudentData extends ConsumerWidget {
               ref.read(firstStudentDataProvider.notifier).onLastNameChanged,
         ),
         CustomTextField(
+          enabled: false,
           label: 'Matrícula',
+          initialValue: userState.user?.id,
           errorMessage: firstStudentData.isFormPosted
               ? firstStudentData.studentEnrollment.errorMessage
               : null,
@@ -88,9 +93,8 @@ class FirstSectionOfStudentData extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: ref.read(formProvider.notifier).changeSection,
-              // onPressed:
-              //     ref.read(firstStudentDataProvider.notifier).onFormSubmit,
+              onPressed:
+                  ref.read(firstStudentDataProvider.notifier).onFormSubmit,
               style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all<Color>(const Color(0xff5A4361)),

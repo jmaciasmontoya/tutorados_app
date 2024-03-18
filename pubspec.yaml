@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^2.2.2
   intl: ^0.19.0
   percent_indicator: ^4.2.3
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -69,25 +70,27 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
-  #   - images/a_dot_ham.jpeg
+    - assets/loaders/loading.gif
+    - assets/loaders/check.gif
+    # - images/a_dot_ham.jpeg
 
   fonts:
   
-    - family: DM Sans
-      fonts:
-        - asset: assets/fonts/DMSans/DMSans_18pt-Light.ttf
-        - asset: assets/fonts/DMSans/DMSans_18pt-Regular.ttf
-        - asset: assets/fonts/DMSans/DMSans_18pt-Medium.ttf
-        - asset: assets/fonts/DMSans/DMSans_18pt-Bold.ttf
-  #         style: italic
+  #   - family: DM Sans
+  #     fonts:
+  #       - asset: assets/fonts/DMSans/DMSans_18pt-Light.ttf
+  #       - asset: assets/fonts/DMSans/DMSans_18pt-Regular.ttf
+  #       - asset: assets/fonts/DMSans/DMSans_18pt-Medium.ttf
+  #       - asset: assets/fonts/DMSans/DMSans_18pt-Bold.ttf
+  # #         style: italic
     - family: Manrope
       fonts:
         - asset: assets/fonts/Manrope/Manrope-Light.ttf
         - asset: assets/fonts/Manrope/Manrope-Regular.ttf
         - asset: assets/fonts/Manrope/Manrope-Medium.ttf
         - asset: assets/fonts/Manrope/Manrope-Bold.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+        # - asset: fonts/TrajanPro_Bold.ttf
+        #   weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

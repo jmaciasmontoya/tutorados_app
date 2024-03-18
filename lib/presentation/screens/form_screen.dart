@@ -47,19 +47,22 @@ class FormScreen extends ConsumerWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                LinearPercentIndicator(
-                  animation: true,
-                  animationDuration: 1000,
-                  percent: formState.loadingBar,
-                  progressColor: const Color(0xff5A4361),
-                  backgroundColor: const Color(0xffffffff),
-                  barRadius: const Radius.circular(10),
-                  trailing: Text(
-                    '${formState.percentageCompleted}%',
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w700),
-                  ),
-                )
+                formState.section == 0
+                    ? Container()
+                    : LinearPercentIndicator(
+                        animation: true,
+                        animateFromLastPercent: true,
+                        animationDuration: 1000,
+                        percent: formState.loadingBar,
+                        progressColor: const Color(0xff5A4361),
+                        backgroundColor: const Color(0xffffffff),
+                        barRadius: const Radius.circular(10),
+                        trailing: Text(
+                          '${formState.percentageCompleted}%',
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w700),
+                        ),
+                      )
               ],
             ),
           ),
@@ -118,7 +121,13 @@ class FormView extends ConsumerWidget {
       case 4:
         return const MedicalDataSection();
       case 5:
+        return const AcademicDataSection();
+      case 6:
         return const SocioeconomicDataSection();
+      case 7:
+        return const UploadPhoto();
+      default:
+        return const FormCompletedFeedback();
     }
   }
 }

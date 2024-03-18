@@ -13,7 +13,7 @@ class AuthUser {
   Future<String> register(String name, String lastName,
       String studentEnrollment, String email, String password) async {
     try {
-      final response = await dio.post('/user/register', data: {
+      final response = await dio.post('/student/register', data: {
         'name': name,
         'lastName': lastName,
         'studentEnrollment': studentEnrollment,

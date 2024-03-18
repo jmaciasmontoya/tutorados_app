@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tutorados_app/presentation/providers/auth_provider.dart';
+import 'package:tutorados_app/presentation/providers/auth_providers/auth_provider.dart';
 
 class SideMenu extends ConsumerWidget {
   const SideMenu({super.key});

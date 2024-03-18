@@ -21,4 +21,8 @@ class User {
   bool get isTutor {
     return role.contains('Tutor');
   }
+
+  bool get isStudent {
+    return role.contains('Student');
+  }
 }

@@ -53,8 +53,7 @@ class CodeNotifier extends StateNotifier<CodeState> {
 
   onCodeChanged(String value) {
     final newCode = Input.dirty(value);
-    state =
-        state.copyWith(code: newCode, isCodeEntered: Formz.validate([newCode]));
+    state = state.copyWith(code: newCode, isCodeEntered: Formz.validate([newCode]));
   }
 
   onCodeSubmit() async {
@@ -69,7 +68,6 @@ class CodeNotifier extends StateNotifier<CodeState> {
     final code = Input.dirty(state.code.value);
     state = state.copyWith(
         isCodePosted: true, code: code, isCodeEntered: Formz.validate([code]));
-    print(state.code.errorMessage);
   }
 
   Future<void> verifyTutor(String code) async {
@@ -108,9 +106,4 @@ final codeProvider = StateNotifierProvider<CodeNotifier, CodeState>((ref) {
   final accessToken = ref.watch(authProvider).user?.token ?? '';
   final formStudent = FormStudent(accessToken: accessToken);
   return CodeNotifier(formStudent: formStudent);
-});
-
-final codeStatusProvider = Provider<CodeStatus>((ref) {
-  final codeStatus = ref.watch(codeProvider);
-  return codeStatus.codeStatus;
 });

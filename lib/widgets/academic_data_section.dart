@@ -8,7 +8,6 @@ class AcademicDataSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final academicProvider = ref.watch(academicDataProvider);
 
     return Column(
@@ -16,17 +15,19 @@ class AcademicDataSection extends ConsumerWidget {
       children: [
         CustomTextField(
           label: 'Preparatoria de origen',
-          errorMessage: academicProvider.highSchool.errorMessage,
-          onChanged: ref.read(academicDataProvider.notifier).onHighSchoolChanged,
+          errorMessage: (academicProvider.messageHighSchool != '')
+              ? academicProvider.messageHighSchool
+              : null,
+          onChanged:
+              ref.read(academicDataProvider.notifier).onHighSchoolChanged,
         ),
         CustomTextField(
           label: 'Promedio general',
-          errorMessage: academicProvider.messageAverage,
-          initialValue: academicProvider.average.toString(),
-          onChanged: (value) {
-            final average = double.tryParse(value);
-            ref.read(academicDataProvider.notifier).onAverageChanged(average!);
-          },
+          errorMessage: (academicProvider.messageAverage != '')
+              ? academicProvider.messageAverage
+              : null,
+          keyboardType: TextInputType.number,
+          onChanged: ref.read(academicDataProvider.notifier).onAverageChanged,
         ),
         const SizedBox(
           height: 10,
@@ -40,7 +41,9 @@ class AcademicDataSection extends ConsumerWidget {
         ),
         CustomTextField(
           hint: 'Puntuación',
-          // errorMessage: ,
+          errorMessage: (academicProvider.messageScore != '')
+              ? academicProvider.messageScore
+              : null,
           onChanged: ref.read(academicDataProvider.notifier).onScoreCeneval,
         ),
         const SizedBox(
@@ -50,16 +53,18 @@ class AcademicDataSection extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-                  onPressed: ref.read(academicDataProvider.notifier).onFormSubmit,
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-                  ),
-                  child: const Icon(
-                    Icons.navigate_next,
-                    color: Color(0xffffffff),
-                  ),
-                ),
+              onPressed: academicProvider.isPosting
+                  ? null
+                  : ref.read(academicDataProvider.notifier).onFormSubmit,
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
+              ),
+              child: const Icon(
+                Icons.navigate_next,
+                color: Color(0xffffffff),
+              ),
+            ),
           ],
         ),
       ],

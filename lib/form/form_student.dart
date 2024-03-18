@@ -38,4 +38,251 @@ class FormStudent {
       throw FormError('Algo malo pasó');
     }
   }
+
+  Future studentData(
+      String name,
+      String lastName,
+      String studentEnrollment,
+      String career,
+      String gender,
+      String tutorOrParent,
+      String birthDate,
+      int age,
+      String placeOfBirth,
+      String religion,
+      String activity) async {
+    try {
+      final response = await dio.post('/student/save-data', data: {
+        "userId": studentEnrollment,
+        "name": name,
+        "lastName": lastName,
+        "career": career,
+        "gender": gender,
+        "tutorOrParent": tutorOrParent,
+        "birthdate": birthDate,
+        "age": age,
+        "placeOfBirth": placeOfBirth,
+        "religion": religion,
+        "activity": activity
+      });
+      final dataSaved = response.data;
+      return dataSaved;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw FormError(error.response?.data['message'] ??
+            'Todos los campos son requeridos');
+      }
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
+
+  Future assignTutor(String studentEnrollment, String tutorId) async {
+    try {
+      final response = await dio.post('/student/assign-tutor',
+          data: {"tutorCode": tutorId, "studentEnrollment": studentEnrollment});
+
+      final assignedTutor = response.data;
+      return assignedTutor;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw FormError(error.response?.data['message'] ??
+            'Todos los campos son requeridos');
+      }
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
+
+  Future saveContactData(
+      String studentEnrollment,
+      String currentAddress,
+      String homeAddress,
+      String cellPhoneNumber,
+      String homePhoneNumber,
+      String email,
+      String tutorsEmail) async {
+    try {
+      final response = await dio.post('/student/contact-data', data: {
+        "userId": studentEnrollment,
+        "currentAddress": currentAddress,
+        "homeAddress": homeAddress,
+        "cellPhoneNumber": cellPhoneNumber,
+        "homePhoneNumber": homePhoneNumber,
+        "email": email,
+        "tutorsEmail": tutorsEmail
+      });
+
+      final dataSaved = response.data;
+      return dataSaved;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw FormError(error.response?.data['message'] ??
+            'Todos los campos son requeridos');
+      }
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
+
+  Future saveMedicalData(
+      String studentEnrollment,
+      String socialSecurityNumber,
+      String bloodType,
+      String disease,
+      String disability,
+      String allergy,
+      String sustances) async {
+    try {
+      final response = await dio.post('/student//medical-data', data: {
+        "userId": studentEnrollment,
+        "socialSecurityNumber": socialSecurityNumber,
+        "bloodType": bloodType,
+        "disease": disease,
+        "disability": disability,
+        "allergy": allergy,
+        "sustances": sustances,
+      });
+      final dataSaved = response.data;
+      return dataSaved;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw FormError(error.response?.data['message'] ??
+            'Todos los campos son requeridos');
+      }
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
+
+  Future saveAcademicData(String studentEnrollment, String highSchool,
+      double average, double scoreCeneval) async {
+    try {
+      final response = await dio.post('/student/academic-data', data: {
+        "userId": studentEnrollment,
+        "highSchool": highSchool,
+        "average": average,
+        "scoreCeneval": scoreCeneval
+      });
+      final dataSaved = response.data;
+      return dataSaved;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw FormError(error.response?.data['message'] ??
+            'Todos los campos son requeridos');
+      }
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
+
+  Future savesocioEconomicData(String studentEnrollment, String workplace,
+      String economicalSupport, String livesWith) async {
+    try {
+      final response = await dio.post('/student/socioeconomic-data', data: {
+        "userId": studentEnrollment,
+        "workplace": workplace,
+        "economicalSupport": economicalSupport,
+        "livesWith": livesWith,
+      });
+      final saveData = response.data;
+      return saveData;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw FormError(error.response?.data['message'] ??
+            'Todos los campos son requeridos');
+      }
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
+
+  Future checkFormProgress(String studentId) async {
+    try {
+      final response = await dio.get('/student/form/progress/$studentId');
+      final section = response.data['lastSectionCompleted'];
+      return section;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
+
+  Future saveImage(String filePath, String studentId) async {
+    try {
+      final FormData data = FormData.fromMap(
+          {'profileImg': MultipartFile.fromFileSync(filePath)});
+
+      final response = await dio.post('/student/image/$studentId', data: data);
+      final image = response.data;
+      return image;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
 }

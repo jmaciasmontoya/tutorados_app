@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tutorados_app/presentation/providers/socieconomic_data_provider.dart';
+import 'package:tutorados_app/presentation/providers/form_providers/socieconomic_data_provider.dart';
 import 'package:tutorados_app/widgets/custom_text_field.dart';
 
 class SocioeconomicDataSection extends ConsumerWidget {
@@ -25,8 +25,11 @@ class SocioeconomicDataSection extends ConsumerWidget {
         ),
         const WorkOption(),
         socioeconomicProvider.work
-            ? const CustomTextField(
+            ? CustomTextField(
                 label: '¿Dónde?',
+                onChanged: ref
+                    .read(socioeconomicDataProvider.notifier)
+                    .onWorkplaceChanged,
               )
             : Container(),
         const SizedBox(
@@ -56,6 +59,7 @@ class SocioeconomicDataSection extends ConsumerWidget {
           child: ListTile(
             onTap: () {
               showModalBottomSheet(
+                isScrollControlled: true,
                 context: context,
                 builder: (context) {
                   return const Coexistence();
@@ -67,11 +71,32 @@ class SocioeconomicDataSection extends ConsumerWidget {
               '¿Con quién vives actualmente?',
             ),
             subtitle: Text(
-              socioeconomicProvider.livesWith.value,
+              socioeconomicProvider.livesWith,
               style: const TextStyle(
                   color: Color(0xff5A4361), fontWeight: FontWeight.bold),
             ),
           ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: socioeconomicProvider.isPosting
+                  ? null
+                  : ref.read(socioeconomicDataProvider.notifier).onFormSubmit,
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
+              ),
+              child: const Icon(
+                Icons.navigate_next,
+                color: Color(0xffffffff),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -138,7 +163,7 @@ class Coexistence extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final socioeconomicProvider = ref.watch(socioeconomicDataProvider);
-
+    final MediaQueryData mediaQueryData = MediaQuery.of(context);
     const activeColor = Color(0xff5A4361);
     const selectedTileColor = Color(0xffE9DEF8);
     final shape = RoundedRectangleBorder(
@@ -147,105 +172,106 @@ class Coexistence extends ConsumerWidget {
             style: BorderStyle.solid, strokeAlign: 1, color: Colors.black38));
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
-      child: ListView(
-        children: [
-          RadioListTile(
-            selected: socioeconomicProvider.livesWith.value == 'Solo',
-            activeColor: activeColor,
-            selectedTileColor: selectedTileColor,
-            shape: shape,
-            value: 'Solo',
-            title: const Text('Solo'),
-            groupValue: socioeconomicProvider.livesWith.value,
-            onChanged: (newValue) {
-              ref
-                  .read(socioeconomicDataProvider.notifier)
-                  .onLiveWithChanged(newValue.toString());
-            },
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-              selected: socioeconomicProvider.livesWith.value == 'Padres',
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
-              shape: shape,
-              value: 'Padres',
-              title: const Text('Padres'),
-              groupValue: socioeconomicProvider.livesWith.value,
-              onChanged: (newValue) {
-                ref
+      padding: mediaQueryData.viewInsets,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile(
+                selected: socioeconomicProvider.livesWith == 'Solo',
+                activeColor: activeColor,
+                selectedTileColor: selectedTileColor,
+                shape: shape,
+                value: 'Solo',
+                title: const Text('Solo'),
+                groupValue: socioeconomicProvider.livesWith,
+                onChanged: (newValue) {
+                  ref
+                      .read(socioeconomicDataProvider.notifier)
+                      .onLiveWithChanged(newValue.toString());
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              RadioListTile(
+                  selected: socioeconomicProvider.livesWith == 'Padres',
+                  activeColor: activeColor,
+                  selectedTileColor: selectedTileColor,
+                  shape: shape,
+                  value: 'Padres',
+                  title: const Text('Padres'),
+                  groupValue: socioeconomicProvider.livesWith,
+                  onChanged: (newValue) {
+                    ref
+                        .read(socioeconomicDataProvider.notifier)
+                        .onLiveWithChanged(newValue.toString());
+                  }),
+              const SizedBox(
+                height: 10,
+              ),
+              RadioListTile(
+                  selected: socioeconomicProvider.livesWith == 'Amigos',
+                  activeColor: activeColor,
+                  selectedTileColor: selectedTileColor,
+                  shape: shape,
+                  value: 'Amigos',
+                  title: const Text('Amigos'),
+                  groupValue: socioeconomicProvider.livesWith,
+                  onChanged: (newValue) {
+                    ref
+                        .read(socioeconomicDataProvider.notifier)
+                        .onLiveWithChanged(newValue.toString());
+                  }),
+              const SizedBox(
+                height: 10,
+              ),
+              RadioListTile(
+                  selected:
+                      socioeconomicProvider.livesWith == 'Uno de sus padres',
+                  activeColor: activeColor,
+                  selectedTileColor: selectedTileColor,
+                  shape: shape,
+                  value: 'Uno de sus padres',
+                  title: const Text('Uno de sus padres'),
+                  groupValue: socioeconomicProvider.livesWith,
+                  onChanged: (newValue) {
+                    ref
+                        .read(socioeconomicDataProvider.notifier)
+                        .onLiveWithChanged(newValue.toString());
+                  }),
+              const SizedBox(
+                height: 10,
+              ),
+              RadioListTile(
+                  selected: socioeconomicProvider.livesWith == 'Pareja',
+                  activeColor: activeColor,
+                  selectedTileColor: selectedTileColor,
+                  shape: shape,
+                  value: 'Pareja',
+                  title: const Text('Pareja'),
+                  groupValue: socioeconomicProvider.livesWith,
+                  onChanged: (newValue) {
+                    ref
+                        .read(socioeconomicDataProvider.notifier)
+                        .onLiveWithChanged(newValue.toString());
+                  }),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomTextField(
+                label: 'Otros, especifique',
+                onChanged: ref
                     .read(socioeconomicDataProvider.notifier)
-                    .onLiveWithChanged(newValue.toString());
-              }),
-          const SizedBox(
-            height: 10,
+                    .onAnotherOption,
+                controller:
+                    ref.read(socioeconomicDataProvider.notifier).anotherOption,
+              )
+            ],
           ),
-          RadioListTile(
-              selected: socioeconomicProvider.livesWith.value == 'Amigos',
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
-              shape: shape,
-              value: 'Amigos',
-              title: const Text('Amigos'),
-              groupValue: socioeconomicProvider.livesWith.value,
-              onChanged: (newValue) {
-                ref
-                    .read(socioeconomicDataProvider.notifier)
-                    .onLiveWithChanged(newValue.toString());
-              }),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-              selected:
-                  socioeconomicProvider.livesWith.value == 'Uno de sus padres',
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
-              shape: shape,
-              value: 'Uno de sus padres',
-              title: const Text('Uno de sus padres'),
-              groupValue: socioeconomicProvider.livesWith.value,
-              onChanged: (newValue) {
-                ref
-                    .read(socioeconomicDataProvider.notifier)
-                    .onLiveWithChanged(newValue.toString());
-              }),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-              selected: socioeconomicProvider.livesWith.value == 'Pareja',
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
-              shape: shape,
-              value: 'Pareja',
-              title: const Text('Pareja'),
-              groupValue: socioeconomicProvider.livesWith.value,
-              onChanged: (newValue) {
-                ref
-                    .read(socioeconomicDataProvider.notifier)
-                    .onLiveWithChanged(newValue.toString());
-              }),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-              selected: socioeconomicProvider.livesWith.value == 'Otro',
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
-              shape: shape,
-              value: 'Otro',
-              title: const Text('Otro'),
-              groupValue: socioeconomicProvider.livesWith.value,
-              onChanged: (newValue) {
-                ref
-                    .read(socioeconomicDataProvider.notifier)
-                    .onLiveWithChanged(newValue.toString());
-              }),
-        ],
+        ),
       ),
     );
   }

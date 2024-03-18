@@ -85,15 +85,13 @@ class SectionTutoring extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final codeState = ref.watch(codeProvider);
-
     return SizedBox(
-      height: 370,
+      height: 390,
       child: GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 2,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
         children: [
           const CardOption(
             title: 'Registro',
@@ -107,7 +105,6 @@ class SectionTutoring extends ConsumerWidget {
           ),
           GestureDetector(
             onTap: () {
-              print(codeState.tutor?.id);
               context.push('/form');
             },
             child: const CardOption(
@@ -137,8 +134,8 @@ class SectionOthers extends StatelessWidget {
       child: GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 2,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
         children: const [
           CardOption(
               title: 'Diagnostico',

@@ -13,11 +13,20 @@ class MedicalDataSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CustomTextField(
+        CustomTextField(
           label: 'Num. Seguro social',
+          onChanged:
+              ref.read(medicalDataProvider.notifier).onSocialNumberChanged,
+          errorMessage: medicalProvider.isFormPosted
+              ? medicalProvider.socialSecurityNumber.errorMessage
+              : null,
         ),
-        const CustomTextField(
+        CustomTextField(
           label: 'Tipo de sangre',
+          onChanged: ref.read(medicalDataProvider.notifier).onBloodTypeChanged,
+          errorMessage: medicalProvider.isFormPosted
+              ? medicalProvider.bloodType.errorMessage
+              : null,
         ),
         const SizedBox(
           height: 10,
@@ -34,8 +43,10 @@ class MedicalDataSection extends ConsumerWidget {
         ),
         const DiseaseOption(),
         medicalProvider.disease
-            ? const CustomTextField(
+            ? CustomTextField(
                 label: '¿Cúal?',
+                onChanged:
+                    ref.read(medicalDataProvider.notifier).onDiseaseChanged,
               )
             : Container(),
         const SizedBox(
@@ -53,8 +64,10 @@ class MedicalDataSection extends ConsumerWidget {
         ),
         const AllergyOption(),
         medicalProvider.allergy
-            ? const CustomTextField(
+            ? CustomTextField(
                 label: '¿Cúal?',
+                onChanged:
+                    ref.read(medicalDataProvider.notifier).onAllergyChanged,
               )
             : Container(),
         const SizedBox(
@@ -67,6 +80,24 @@ class MedicalDataSection extends ConsumerWidget {
         const SubstanceOption(),
         const SizedBox(
           height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: medicalProvider.isPosting
+                  ? null
+                  : ref.read(medicalDataProvider.notifier).onFormSubmit,
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
+              ),
+              child: const Icon(
+                Icons.navigate_next,
+                color: Color(0xffffffff),
+              ),
+            ),
+          ],
         ),
       ],
     );

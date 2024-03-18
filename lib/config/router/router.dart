@@ -31,10 +31,25 @@ final goRouterProvider = Provider((ref) {
         path: '/form',
         builder: (context, state) => const FormScreen(),
       ),
+      GoRoute(
+        path: '/tutor',
+        builder: (context, state) => const TutorScreen(),
+      ),
+      GoRoute(
+        path: '/tutored',
+        builder: (context, state) => const TutoredScreen(),
+      ),
+      GoRoute(
+        path: '/student/:id',
+        builder: (context, state) => StudentScreen(
+          studentId: state.pathParameters['id'] ?? 'No id',
+        ),
+      ),
     ],
     redirect: (context, state) {
       final isGoingTo = state.matchedLocation;
       final authStatus = goRouterNotifier.authStatus;
+      final user = goRouterNotifier.user;
 
       if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
         return null;
@@ -49,8 +64,23 @@ final goRouterProvider = Provider((ref) {
       if (authStatus == AuthStatus.authenticated) {
         if (isGoingTo == '/login' ||
             isGoingTo == '/register' ||
-            isGoingTo == '/splash') return '/home';
+            isGoingTo == '/splash') {
+          return '/home';
+        }
+
+        if (user != null && user.role == 'Tutor') {
+          if (isGoingTo == '/tutored') {
+            return null;
+          }
+
+          if (isGoingTo.startsWith('/student')) {
+            return isGoingTo;
+          }
+
+          return '/tutor';
+        }
       }
+
       return null;
     },
   );

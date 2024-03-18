@@ -9,6 +9,7 @@ class ContactInformationSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final contactProvider = ref.watch(contactDataProvider);
+    final userData = ref.watch(authProvider);
 
     return Column(
       children: [
@@ -45,7 +46,8 @@ class ContactInformationSection extends ConsumerWidget {
               : null,
         ),
         CustomTextField(
-          hint: 'Correo',
+          label: 'Correo',
+          initialValue: userData.user!.email,
           onChanged: ref.read(contactDataProvider.notifier).onEmailChanged,
           errorMessage: contactProvider.isFormPosted
               ? contactProvider.email.errorMessage
@@ -66,7 +68,9 @@ class ContactInformationSection extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: ref.read(contactDataProvider.notifier).onFormSubmit,
+              onPressed: contactProvider.isPosting
+                  ? null
+                  : ref.read(contactDataProvider.notifier).onFormSubmit,
               style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all<Color>(const Color(0xff5A4361)),

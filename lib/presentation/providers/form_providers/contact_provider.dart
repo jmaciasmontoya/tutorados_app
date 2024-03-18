@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:tutorados_app/form/form_student.dart';
 import 'package:tutorados_app/inputs/inputs.dart';
+import 'package:tutorados_app/presentation/providers/providers.dart';
 
 class ContactDataState {
   final Input currentAddress;
@@ -12,6 +14,7 @@ class ContactDataState {
   final bool isValid;
   final bool isFormPosted;
   final bool isPosting;
+  final bool isCompleted;
 
   ContactDataState({
     this.currentAddress = const Input.pure(),
@@ -23,6 +26,7 @@ class ContactDataState {
     this.isValid = false,
     this.isFormPosted = false,
     this.isPosting = false,
+    this.isCompleted = false,
   });
 
   ContactDataState copyWith({
@@ -35,6 +39,7 @@ class ContactDataState {
     bool? isValid,
     bool? isFormPosted,
     bool? isPosting,
+    bool? isCompleted,
   }) =>
       ContactDataState(
         currentAddress: currentAddress ?? this.currentAddress,
@@ -46,11 +51,16 @@ class ContactDataState {
         isValid: isValid ?? this.isValid,
         isFormPosted: isFormPosted ?? this.isFormPosted,
         isPosting: isPosting ?? this.isPosting,
+        isCompleted: isCompleted ?? this.isCompleted,
       );
 }
 
 class ContactDataNotifier extends StateNotifier<ContactDataState> {
-  ContactDataNotifier() : super(ContactDataState());
+  final AuthState userData;
+  final FormStudent formStudent;
+
+  ContactDataNotifier({required this.userData, required this.formStudent})
+      : super(ContactDataState(email: Email.dirty(userData.user!.email)));
 
   onCurrentAddressChanged(String value) {
     final newValue = Input.dirty(value);
@@ -85,7 +95,25 @@ class ContactDataNotifier extends StateNotifier<ContactDataState> {
   onFormSubmit() {
     _touchEveryField();
     if (!state.isValid) return;
-    print('Enviando datos...');
+    state = state.copyWith(isPosting: true);
+    sendData();
+    state = state.copyWith(isPosting: false);
+  }
+
+  sendData() async {
+    try {
+      await formStudent.saveContactData(
+          userData.user!.id,
+          state.currentAddress.value,
+          state.homeAddress.value,
+          state.cellPhoneNumber.value,
+          state.homePhoneNumber.value,
+          state.email.value,
+          state.tutorsEmail.value);
+      state = state.copyWith(isCompleted: true);
+    } catch (e) {
+      state = state.copyWith(isCompleted: false);
+    }
   }
 
   _touchEveryField() {
@@ -116,7 +144,11 @@ class ContactDataNotifier extends StateNotifier<ContactDataState> {
 }
 
 final contactDataProvider =
-    StateNotifierProvider.autoDispose<ContactDataNotifier, ContactDataState>(
+    StateNotifierProvider<ContactDataNotifier, ContactDataState>(
         (ref) {
-  return ContactDataNotifier();
+  final userData = ref.watch(authProvider);
+  final accessToken = ref.watch(authProvider).user?.token ?? '';
+  final formStudent = FormStudent(accessToken: accessToken);
+
+  return ContactDataNotifier(userData: userData, formStudent: formStudent);
 });

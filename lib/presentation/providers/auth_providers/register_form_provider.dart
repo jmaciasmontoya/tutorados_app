@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:tutorados_app/inputs/inputs.dart';
-import 'package:tutorados_app/presentation/providers/auth_provider.dart';
+import 'package:tutorados_app/presentation/providers/auth_providers/auth_provider.dart';
 
 class RegisterFormState {
   final bool isPosting;

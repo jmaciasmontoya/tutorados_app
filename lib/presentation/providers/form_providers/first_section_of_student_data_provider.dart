@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:tutorados_app/inputs/inputs.dart';
+import 'package:tutorados_app/presentation/providers/providers.dart';
 
 class FistSectionStudentDataState {
   final Input name;
@@ -12,6 +13,7 @@ class FistSectionStudentDataState {
   final bool isFormPosted;
   final bool isPosting;
   final String message;
+  final bool isCompleted;
 
   FistSectionStudentDataState({
     this.name = const Input.pure(),
@@ -23,6 +25,7 @@ class FistSectionStudentDataState {
     this.isFormPosted = false,
     this.isPosting = false,
     this.message = '',
+    this.isCompleted = false,
   });
 
   FistSectionStudentDataState copyWith({
@@ -35,6 +38,7 @@ class FistSectionStudentDataState {
     bool? isFormPosted,
     bool? isPosting,
     String? message,
+    bool? isCompleted,
   }) =>
       FistSectionStudentDataState(
         name: name ?? this.name,
@@ -46,12 +50,20 @@ class FistSectionStudentDataState {
         isFormPosted: isFormPosted ?? this.isFormPosted,
         isPosting: isPosting ?? this.isPosting,
         message: message ?? this.message,
+        isCompleted: isCompleted ?? this.isCompleted,
       );
 }
 
 class FistSectionStudentDataNotifier
     extends StateNotifier<FistSectionStudentDataState> {
-  FistSectionStudentDataNotifier() : super(FistSectionStudentDataState());
+  final AuthState userData;
+
+  FistSectionStudentDataNotifier({required this.userData})
+      : super(FistSectionStudentDataState(
+          name: Input.dirty(userData.user!.name),
+          lastName: Input.dirty(userData.user!.lastName),
+          studentEnrollment: Input.dirty(userData.user!.id),
+        ));
 
   onNameChanged(String value) {
     final newName = Input.dirty(value);
@@ -78,11 +90,9 @@ class FistSectionStudentDataNotifier
     state = state.copyWith(career: newCareer);
   }
 
-
   onFormSubmit() {
     _touchEveryField();
     if (!state.isValid) return;
-    print('Enviando datos...');
   }
 
   _touchEveryField() {
@@ -99,7 +109,9 @@ class FistSectionStudentDataNotifier
   }
 }
 
-final firstStudentDataProvider = StateNotifierProvider.autoDispose<
+final firstStudentDataProvider = StateNotifierProvider<
     FistSectionStudentDataNotifier, FistSectionStudentDataState>((ref) {
-  return FistSectionStudentDataNotifier();
+  final userData = ref.watch(authProvider);
+
+  return FistSectionStudentDataNotifier(userData: userData);
 });

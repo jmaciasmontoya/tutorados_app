@@ -10,7 +10,7 @@ class CardOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(7),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),

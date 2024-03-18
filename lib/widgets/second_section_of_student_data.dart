@@ -80,7 +80,9 @@ class SecondSectionOfStudentData extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: ref.read(secondStudentDataProvider.notifier).onFormSubmit,
+              onPressed: secondStudentData.isPosting
+                  ? null
+                  : ref.read(secondStudentDataProvider.notifier).onFormSubmit,
               style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
