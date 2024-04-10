@@ -5,14 +5,16 @@ import 'package:tutorados_app/config/theme/theme_provider.dart';
 import 'package:tutorados_app/presentation/providers/providers.dart';
 import 'package:tutorados_app/widgets/widgets.dart';
 
-class TutorScreen extends ConsumerWidget {
-  const TutorScreen({super.key});
+class AdminScreen extends ConsumerWidget {
+  const AdminScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     final isDarkMode = ref.watch(isDarkModeProvider);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(colors.surface.value),
         leading: IconButton(
             onPressed: () {
               ref.read(isDarkModeProvider.notifier).update((state) => !state);
@@ -20,13 +22,14 @@ class TutorScreen extends ConsumerWidget {
             icon: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode)),
       ),
       endDrawer: const SideMenu(),
-      body: const HomeTutorView(),
+      body: const HomeAdminView(),
     );
+    ;
   }
 }
 
-class HomeTutorView extends ConsumerWidget {
-  const HomeTutorView({super.key});
+class HomeAdminView extends ConsumerWidget {
+  const HomeAdminView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,7 +59,7 @@ class HomeTutorView extends ConsumerWidget {
             const SizedBox(
               height: 20,
             ),
-            const SectionCards(),
+            const _SectionCards(),
           ],
         ),
       ),
@@ -64,11 +67,11 @@ class HomeTutorView extends ConsumerWidget {
   }
 }
 
-class SectionCards extends StatelessWidget {
-  const SectionCards({super.key});
+class _SectionCards extends ConsumerWidget {
+  const _SectionCards();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       height: 370,
       child: GridView.count(
@@ -85,6 +88,16 @@ class SectionCards extends StatelessWidget {
             ),
             onTap: () {
               context.push('/tutored');
+            },
+          ),
+          GestureDetector(
+            child: const CardOption(
+              title: 'Tutores',
+              description: '...',
+              icon: Icons.group,
+            ),
+            onTap: () {
+              context.push('/tutors');
             },
           ),
         ],

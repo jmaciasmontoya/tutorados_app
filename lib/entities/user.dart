@@ -15,7 +15,7 @@ class User {
       required this.token});
 
   bool get isAdmin {
-    return role.contains('Admin');
+    return role.contains('Administrador');
   }
 
   bool get isTutor {

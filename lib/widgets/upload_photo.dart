@@ -10,6 +10,7 @@ class UploadPhoto extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     final photoState = ref.watch(photoProvider);
     late ImageProvider imageProvider;
     imageProvider = FileImage(File(photoState.image));
@@ -17,15 +18,15 @@ class UploadPhoto extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text('Para terminar, por favor',
+        Text('Para terminar, por favor',
             style: TextStyle(
-                color: Color(0xff5A4361),
-                fontSize: 18,
+                color: Color(colors.onPrimaryContainer.value),
+                fontSize: 16,
                 fontWeight: FontWeight.w500)),
-        const Text('Sube una fotografía tuya ',
+        Text('sube una fotografía tuya ',
             style: TextStyle(
-                color: Color(0xff5A4361),
-                fontSize: 18,
+                color: Color(colors.onPrimaryContainer.value),
+                fontSize: 16,
                 fontWeight: FontWeight.w500)),
         const SizedBox(
           height: 20,
@@ -37,7 +38,7 @@ class UploadPhoto extends ConsumerWidget {
                 width: 250,
                 height: 150,
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
                   child: FadeInImage(
                     fit: BoxFit.cover,
                     image: imageProvider,
@@ -48,33 +49,51 @@ class UploadPhoto extends ConsumerWidget {
         const SizedBox(
           height: 20,
         ),
-        ElevatedButton(
-          onPressed: () async {
-            final photoPath = await CameraGalleryService().selectPhoto();
-            if (photoPath == null) return;
-            ref.read(photoProvider.notifier).onImageChanged(photoPath);
-          },
-          style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-          ),
-          child: const Icon(
-            Icons.photo_camera,
-            color: Color(0xffffffff),
-          ),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Color(colors.primary.value),
+                  foregroundColor: Color(colors.onPrimary.value)),
+              onPressed: () async {
+                final photoPath = await CameraGalleryService().selectPhoto();
+                if (photoPath == null) return;
+                ref.read(photoProvider.notifier).onImageChanged(photoPath);
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  'Seleccionar fotografía',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              )),
+        ),
+        const SizedBox(
+          height: 20,
         ),
         photoState.image.isEmpty
             ? Container()
-            : ElevatedButton(
-                onPressed: ref.read(photoProvider.notifier).onFormSubmit,
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-                ),
-                child: const Icon(
-                  Icons.navigate_next,
-                  color: Color(0xffffffff),
-                ),
+            : SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        backgroundColor: Color(colors.primary.value),
+                        foregroundColor: Color(colors.onPrimary.value)),
+                    onPressed: photoState.isPosting
+                        ? null
+                        : ref.read(photoProvider.notifier).onFormSubmit,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      child: Text(
+                        'Siguiente',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    )),
               ),
       ],
     );

@@ -10,7 +10,7 @@ class ContactInformationSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final contactProvider = ref.watch(contactDataProvider);
     final userData = ref.watch(authProvider);
-
+    final colors = Theme.of(context).colorScheme;
     return Column(
       children: [
         CustomTextField(
@@ -21,6 +21,9 @@ class ContactInformationSection extends ConsumerWidget {
               ? contactProvider.currentAddress.errorMessage
               : null,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
           label: 'Domicilio familiar',
           onChanged:
@@ -29,58 +32,76 @@ class ContactInformationSection extends ConsumerWidget {
               ? contactProvider.homeAddress.errorMessage
               : null,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
           label: 'Celular',
+          keyboardType: TextInputType.phone,
           onChanged:
               ref.read(contactDataProvider.notifier).onCellPhoneNumberChanged,
           errorMessage: contactProvider.isFormPosted
               ? contactProvider.cellPhoneNumber.errorMessage
               : null,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
           label: 'Tel. Casa',
+          keyboardType: TextInputType.phone,
           onChanged:
               ref.read(contactDataProvider.notifier).onHomePhoneNumberChanged,
           errorMessage: contactProvider.isFormPosted
               ? contactProvider.homePhoneNumber.errorMessage
               : null,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
           label: 'Correo',
+          keyboardType: TextInputType.emailAddress,
           initialValue: userData.user!.email,
           onChanged: ref.read(contactDataProvider.notifier).onEmailChanged,
           errorMessage: contactProvider.isFormPosted
               ? contactProvider.email.errorMessage
               : null,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
           label: 'Correo del tutor',
+          keyboardType: TextInputType.emailAddress,
           onChanged:
               ref.read(contactDataProvider.notifier).onTutorsEmailChanged,
           errorMessage: contactProvider.isFormPosted
               ? contactProvider.tutorsEmail.errorMessage
               : null,
+              onFieldSubmitted: (_) => ref.read(contactDataProvider.notifier).onFormSubmit(),
         ),
         const SizedBox(
           height: 20,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Color(colors.primary.value),
+                  foregroundColor: Color(colors.onPrimary.value)),
               onPressed: contactProvider.isPosting
                   ? null
                   : ref.read(contactDataProvider.notifier).onFormSubmit,
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-              ),
-              child: const Icon(
-                Icons.navigate_next,
-                color: Color(0xffffffff),
-              ),
-            ),
-          ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  'Siguiente',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              )),
         ),
       ],
     );

@@ -45,6 +45,18 @@ final goRouterProvider = Provider((ref) {
           studentId: state.pathParameters['id'] ?? 'No id',
         ),
       ),
+      GoRoute(
+        path: '/admin',
+        builder: (context, state) => const AdminScreen(),
+      ),
+      GoRoute(
+        path: '/tutors',
+        builder: (context, state) => const TutorsScreen(),
+      ),
+      GoRoute(
+        path: '/register/tutor',
+        builder: (context, state) => const RegisterTutorScreen(),
+      ),
     ],
     redirect: (context, state) {
       final isGoingTo = state.matchedLocation;
@@ -78,6 +90,19 @@ final goRouterProvider = Provider((ref) {
           }
 
           return '/tutor';
+        }
+
+        if (user != null && user.role == 'Administrador') {
+          if (isGoingTo == '/tutored' ||
+              isGoingTo == '/tutors' ||
+              isGoingTo == '/register/tutor') {
+            return null;
+          }
+          if (isGoingTo.startsWith('/student')) {
+            return isGoingTo;
+          }
+
+          return '/admin';
         }
       }
 

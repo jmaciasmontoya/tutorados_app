@@ -1,170 +1,327 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorados_app/config/config.dart';
+import 'package:tutorados_app/entities/entities.dart';
 import 'package:tutorados_app/presentation/providers/providers.dart';
 
-class StudentScreen extends StatelessWidget {
+class StudentScreen extends ConsumerWidget {
+  void showDialogInfo(BuildContext context, String pathFile) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return _DocInfo(
+            studentId: studentId,
+            filePath: pathFile,
+          );
+        });
+  }
+
   final String studentId;
 
   const StudentScreen({super.key, required this.studentId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final studentState = ref.watch(studentProvider(studentId));
+    final colors = Theme.of(context).colorScheme;
+
+    ref.listen(studentProvider(studentId), (previous, next) {
+      if (next.isFileDownloaded && next.pathFile.isNotEmpty) {
+        showDialogInfo(context, next.pathFile);
+      }
+    });
+
     return Scaffold(
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            heroTag: 'pdf',
+            icon: studentState.pdfIsDownloading
+                ? CircularProgressIndicator(
+                    color: Color(colors.onPrimary.value),
+                    strokeWidth: 2,
+                  )
+                : Icon(
+                    Icons.download,
+                    color: Color(colors.onPrimary.value),
+                  ),
+            onPressed: () {
+              ref.read(studentProvider(studentId).notifier).getFile('pdf');
+            },
+            label: studentState.pdfIsDownloading
+                ? Container()
+                : Text(
+                    'PDF',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(colors.onPrimary.value),
+                    ),
+                  ),
+            backgroundColor: Color(colors.primary.value),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton.extended(
+            heroTag: 'csv',
+            icon: studentState.csvIsDownloading
+                ? CircularProgressIndicator(
+                    color: Color(colors.onPrimary.value),
+                    strokeWidth: 2,
+                  )
+                : Icon(
+                    Icons.download,
+                    color: Color(colors.onPrimary.value),
+                  ),
+            onPressed: () {
+              ref.read(studentProvider(studentId).notifier).getFile('csv');
+            },
+            label: studentState.csvIsDownloading
+                ? Container()
+                : Text(
+                    'CSV',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(colors.onPrimary.value),
+                    ),
+                  ),
+            backgroundColor: Color(colors.primary.value),
+          ),
+        ],
+      ),
       appBar: AppBar(),
-      body: StudentView(
-        studentId: studentId,
+      body: studentState.isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            )
+          : StudentView(
+              student: studentState.student,
+            ),
+    );
+  }
+}
+
+class _DocInfo extends ConsumerWidget {
+  final String studentId;
+  final String filePath;
+  const _DocInfo({required this.studentId, required this.filePath});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
+    return AlertDialog(
+        title: const Text('Archivo descargado'),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton.icon(
+              onPressed: () {
+                ref.read(studentProvider(studentId).notifier).closeFileInfo();
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.check, color: Color(colors.secondary.value)),
+              label: Text(
+                'Aceptar',
+                style: TextStyle(color: Color(colors.secondary.value)),
+              )),
+          TextButton.icon(
+              onPressed: () {
+                ref.read(studentProvider(studentId).notifier).openFile();
+                ref.read(studentProvider(studentId).notifier).closeFileInfo();
+                Navigator.of(context).pop();
+              },
+              icon:
+                  Icon(Icons.open_in_new, color: Color(colors.secondary.value)),
+              label: Text(
+                'Abrir',
+                style: TextStyle(color: Color(colors.secondary.value)),
+              ))
+        ],
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 120,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Ruta del archivo:',
+                style: TextStyle(
+                    fontSize: 16, color: Color(colors.secondary.value)),
+              ),
+              Text(
+                filePath,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+class StudentView extends StatelessWidget {
+  final Student? student;
+  const StudentView({super.key, this.student});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            HeaderContainer(
+              image: student?.image ?? 'Sin fotografía',
+              studentId: student?.studentEnrollment ?? 'Sin id',
+              name: student?.name ?? 'nombre',
+              lastName: student?.lastName ?? 'apellido',
+              career: student?.career ?? 'carrera',
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Text(
+              'Datos del alumno',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Color(colors.secondary.value)),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            StudentData(student: student),
+            const SizedBox(
+              height: 30,
+            ),
+            Text(
+              'Contacto',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Color(colors.secondary.value)),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ContactData(student: student),
+            const SizedBox(
+              height: 30,
+            ),
+            Text(
+              'Datos médicos',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Color(colors.secondary.value)),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            MedicalData(student: student),
+            const SizedBox(
+              height: 30,
+            ),
+            Text(
+              'Datos acádemicos',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Color(colors.secondary.value)),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            AcademicData(student: student),
+            const SizedBox(
+              height: 30,
+            ),
+            Text(
+              'Datos socioeconómicos',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Color(colors.secondary.value)),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SocioEconomicData(student: student),
+          ],
+        ),
       ),
     );
   }
 }
 
-class StudentView extends ConsumerWidget {
-  final String studentId;
-  const StudentView({super.key, required this.studentId});
+class _ImageViewer extends StatelessWidget {
+  final String image;
+  const _ImageViewer({required this.image});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final studentState = ref.watch(studentProvider(studentId));
-    return studentState.isLoading
-        ? const Center(
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          )
-        : SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  HeaderContainer(
-                    studentId: studentState.id,
-                    name: studentState.student?.name?? 'nombre',
-                    lastName: studentState.student?.lastName?? 'apellido',
-                    career: studentState.student?.career?? 'carrera',
-                    email: '203422@ids.upchiapas.edu.mx',
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const Text(
-                    'Datos del alumno',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff403046)),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const StudentData(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    'Contacto',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff403046)),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const ContactData(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    'Datos médicos',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff403046)),
-                  ),
-                  const MedicalData(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    'Datos acádemicos',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff403046)),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const AcademicData(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    'Datos socioeconomicos',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff403046)),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const SocioEconomicData(),
-                ],
-              ),
-            ),
-          );
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(5),
+      child: FadeInImage(
+        fit: BoxFit.cover,
+        image: NetworkImage('${Environment.apiUrl}/$image'),
+        placeholder: const AssetImage('assets/loaders/loading.gif'),
+      ),
+    );
   }
 }
 
 class HeaderContainer extends StatelessWidget {
+  final String image;
   final String studentId;
   final String name;
   final String lastName;
   final String career;
-  final String email;
-  const HeaderContainer(
-      {super.key,
-      required this.studentId,
-      required this.name,
-      required this.lastName,
-      required this.career,
-      required this.email});
+  const HeaderContainer({
+    super.key,
+    required this.image,
+    required this.studentId,
+    required this.name,
+    required this.lastName,
+    required this.career,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return SizedBox(
       width: double.maxFinite,
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-                color: const Color(0xff80608B),
-                borderRadius: BorderRadius.circular(50)),
-            child: const Icon(Icons.person, color: Colors.white, size: 70),
+          SizedBox(
+            width: 120,
+            height: 120,
+            child: _ImageViewer(image: image),
           ),
           const SizedBox(
             height: 10,
           ),
           Text(
             studentId,
-            style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xff403046),
-                fontWeight: FontWeight.w500),
+            style: TextStyle(
+                fontSize: 20,
+                color: Color(colors.secondary.value),
+                fontWeight: FontWeight.w700),
           ),
           Text(
             '$name $lastName',
-            style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xff403046),
-                fontWeight: FontWeight.w700),
+            style: TextStyle(
+                fontSize: 18,
+                color: Color(colors.onSurface.value),
+                fontWeight: FontWeight.w500),
           ),
           Text(career,
-              style: const TextStyle(
-                  fontSize: 16,
-                  color: Color(0xff403046),
+              style: TextStyle(
+                  fontSize: 18,
+                  color: Color(colors.onSurface.value),
                   fontWeight: FontWeight.w500))
         ],
       ),
@@ -173,90 +330,149 @@ class HeaderContainer extends StatelessWidget {
 }
 
 class StudentData extends StatelessWidget {
-  const StudentData({super.key});
+  final Student? student;
+  const StudentData({super.key, this.student});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Edad'),
-        Text('Género'),
-        Text('Religión'),
-        Text('Actividad deportiva'),
-        Text('Fecha de nacimiento'),
-        Text('Lugar de nacimiento'),
-        Text('Tutor o Padre de familia'),
+        Text(
+          'Edad:  ${student?.age ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Género:  ${student?.gender ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Religión:  ${student?.religion ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Actividad deportiva:  ${student?.activity ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Fecha de nacimiento:  ${student?.birthdate ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Lugar de nacimiento:  ${student?.placeOfBirth ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Tutor o Padre de familia:  ${student?.tutorOrParent ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
       ],
     );
   }
 }
 
 class ContactData extends StatelessWidget {
-  const ContactData({super.key});
+  final Student? student;
+  const ContactData({super.key, this.student});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Celular'),
-        Text('Tel. Casa'),
-        Text('Correo'),
-        Text('Correo del tutor'),
-        Text('Domicilio actual'),
-        Text('Domicilio Familiar'),
+        Text(
+          'Celular: ${student?.cellPhoneNumber ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Tel. Casa: ${student?.homePhoneNumber ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text('Correo: ${student?.email ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text(
+          'Correo del tutor:  ${student?.tutorsEmail ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Domicilio actual: ${student?.currentAddress ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Domicilio Familiar, ${student?.homeAddress ?? 'Sin informacion'}',
+          style: const TextStyle(fontSize: 16),
+        ),
       ],
     );
   }
 }
 
 class MedicalData extends StatelessWidget {
-  const MedicalData({super.key});
+  final Student? student;
+  const MedicalData({super.key, this.student});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Número de Seguro social'),
-        Text('Tipo de sangre'),
-        Text('¿Padece algúna enfermedad?'),
-        Text('¿Padece algúna discapacidad?'),
-        Text('¿Padece algúna alergía?'),
-        Text('¿Consume algúna sustancia?'),
+        Text(
+            'Número de Seguro social: ${student?.socialSecurityNumber ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text('Tipo de sangre: ${student?.bloodType ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text('Enfermedad: ${student?.disease ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text('Discapacidad: ${student?.disability ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text('Alergia: ${student?.allergy ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text(
+            'Consumo de sustancias toxicas: ${student?.sustances ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
       ],
     );
   }
 }
 
 class AcademicData extends StatelessWidget {
-  const AcademicData({super.key});
+  final Student? student;
+  const AcademicData({super.key, this.student});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Preparatoria de origen'),
-        Text('Promedio'),
-        Text('Puntuación de examen CENEVAL'),
+        Text(
+            'Preparatoria de origen: ${student?.highSchool ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text('Promedio: ${student?.average ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text(
+            'Puntuación de examen CENEVAL: ${student?.scoreCeneval ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
       ],
     );
   }
 }
 
 class SocioEconomicData extends StatelessWidget {
-  const SocioEconomicData({super.key});
+  final Student? student;
+  const SocioEconomicData({super.key, this.student});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Trabajo actual'),
-        Text('¿Cuenta con apoyo económico?'),
-        Text('Vive con: '),
+        Text('Trabajo: ${student?.workplace ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text(
+            '¿Cuenta con apoyo económico?: ${student?.economicalSupport ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
+        Text('Vive con: ${student?.livesWith ?? 'Sin informacion'}',
+            style: const TextStyle(fontSize: 16)),
       ],
     );
   }

@@ -10,20 +10,26 @@ class FirstSectionOfStudentData extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final firstStudentData = ref.watch(firstStudentDataProvider);
     final userState = ref.watch(authProvider);
+    final colors = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextField(
           label: 'Nombre',
+          isFormStudent: true,
           initialValue: userState.user?.name,
           onChanged: ref.read(firstStudentDataProvider.notifier).onNameChanged,
           errorMessage: firstStudentData.isFormPosted
               ? firstStudentData.name.errorMessage
               : null,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
           label: 'Apellido',
+          isFormStudent: true,
           initialValue: userState.user?.lastName,
           errorMessage: firstStudentData.isFormPosted
               ? firstStudentData.lastName.errorMessage
@@ -31,9 +37,13 @@ class FirstSectionOfStudentData extends ConsumerWidget {
           onChanged:
               ref.read(firstStudentDataProvider.notifier).onLastNameChanged,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
           enabled: false,
           label: 'Matrícula',
+          isFormStudent: true,
           initialValue: userState.user?.id,
           errorMessage: firstStudentData.isFormPosted
               ? firstStudentData.studentEnrollment.errorMessage
@@ -45,15 +55,15 @@ class FirstSectionOfStudentData extends ConsumerWidget {
         const SizedBox(
           height: 20,
         ),
-        const Text(
+        Text(
           'Género',
           style: TextStyle(
-              color: Color(0xff303030),
+              color: Color(colors.onPrimaryContainer.value),
               fontWeight: FontWeight.w500,
               fontSize: 16),
         ),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
         const SelectGender(),
         const SizedBox(
@@ -63,12 +73,13 @@ class FirstSectionOfStudentData extends ConsumerWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFF989898),
+                color: Color(colors.onSurface.value),
                 width: 1,
               )),
           child: ListTile(
             onTap: () {
               showModalBottomSheet(
+                showDragHandle: true,
                 context: context,
                 builder: (context) {
                   return const SelectCareer();
@@ -76,35 +87,39 @@ class FirstSectionOfStudentData extends ConsumerWidget {
               );
             },
             trailing: const Icon(Icons.arrow_drop_down),
-            title: const Text(
-              'Programa académico',
-            ),
+            title: Text('Programa académico',
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Color(colors.onPrimaryContainer.value),
+                    fontWeight: FontWeight.bold)),
             subtitle: Text(
               firstStudentData.career.value,
-              style: const TextStyle(
-                  color: Color(0xff5A4361), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Color(colors.secondary.value),
+                  fontWeight: FontWeight.w500),
             ),
           ),
         ),
         const SizedBox(
           height: 20,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Color(colors.primary.value),
+                  foregroundColor: Color(colors.onPrimary.value)),
               onPressed:
                   ref.read(firstStudentDataProvider.notifier).onFormSubmit,
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-              ),
-              child: const Icon(
-                Icons.navigate_next,
-                color: Color(0xffffffff),
-              ),
-            ),
-          ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  'Siguiente',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              )),
         ),
       ],
     );
@@ -117,21 +132,26 @@ class SelectGender extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firstStudentData = ref.watch(firstStudentDataProvider);
+    final colors = Theme.of(context).colorScheme;
 
     return SegmentedButton(
-      style: ButtonStyle(
-        visualDensity: VisualDensity.compact,
-        shape: MaterialStatePropertyAll(
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(12))),
+      style: SegmentedButton.styleFrom(
+        selectedBackgroundColor: Color(colors.primary.value),
+        selectedForegroundColor: Color(colors.onPrimary.value),
+        shape: (ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(12))),
       ),
       segments: const [
         ButtonSegment(
             value: 'Masculino',
-            label: Text('Masculino'),
+            label: Text(
+              'Masculino',
+              style: TextStyle(fontSize: 16),
+            ),
             icon: Icon(Icons.male)),
         ButtonSegment(
             value: 'Femenino',
-            label: Text('Femenino'),
+            label: Text('Femenino', style: TextStyle(fontSize: 16)),
             icon: Icon(Icons.female)),
       ],
       selected: {firstStudentData.gender.value},

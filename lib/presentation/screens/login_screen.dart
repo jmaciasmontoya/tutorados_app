@@ -9,59 +9,41 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color(0xff80608B),
-            iconTheme: const IconThemeData(color: Colors.white),
-          ),
-          backgroundColor: const Color(0xff80608B),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 50,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 50),
+          backgroundColor: Color(colors.background.value),
+          body: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: Column(
                   children: [
-                    Text('Bienvenido',
-                        style: TextStyle(
-                            color: Color(0xffffffff),
-                            fontSize: 42,
-                            fontWeight: FontWeight.bold)),
-                    Text(
-                      'Por favor ingresa tus datos',
-                      style: TextStyle(color: Color(0xffffffff), fontSize: 18),
+                    Column(
+                      children: [
+                        Text('Bienvenido',
+                            style: TextStyle(
+                                color: Color(colors.onSurface.value),
+                                fontSize: 54,
+                                fontWeight: FontWeight.normal)),
+                        Text(
+                          'Por favor ingresa tus datos',
+                          style: TextStyle(
+                              color: Color(colors.onSurface.value),
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal),
+                        ),
+                      ],
                     ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    const LoginForm()
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 50,
-              ),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xff403046).withOpacity(0.20),
-                          offset: const Offset(-4, -4),
-                          blurRadius: 20,
-                          spreadRadius: 1,
-                        )
-                      ],
-                      color: const Color(0xffffffff),
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40))),
-                  child: const LoginForm(),
-                ),
-              )
-            ],
+            ),
           )),
     );
   }
@@ -78,6 +60,7 @@ class LoginForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     final loginForm = ref.watch(loginFormProvider);
 
     ref.listen(authProvider, (previous, next) {
@@ -85,80 +68,75 @@ class LoginForm extends ConsumerWidget {
       showSnackbar(context, next.message);
     });
 
-    return SingleChildScrollView(
-      child: Form(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 50),
+    return Form(
         child: Column(
-          children: [
-            CustomTextField(
-              label: 'Matrícula o correo electrónico',
-              onChanged: ref.read(loginFormProvider.notifier).onIdentifierChanged,
-              errorMessage:
-                  loginForm.isFormPosted ? loginForm.identifier.errorMessage : null,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomTextField(
-              isObscureText: true,
-              label: 'Contraseña',
-              onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
-              onFieldSubmitted: ( _ ) => ref.read(loginFormProvider.notifier).onFormSubmit(),
-              errorMessage: loginForm.isFormPosted
-                  ? loginForm.password.errorMessage
-                  : null,
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: loginForm.isPosting
-                      ? null
-                      : ref.read(loginFormProvider.notifier).onFormSubmit,
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
-                      backgroundColor: const Color(0xff5A4361),
-                      foregroundColor: Colors.white),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                    child: Text(
-                      'Entrar',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                  ),
-                )),
-            const SizedBox(
-              height: 50,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  '¿No tienes cuenta? ',
-                  style: TextStyle(fontSize: 18, color: Color(0xff303030)),
+      children: [
+        CustomTextField(
+          label: 'Matrícula o correo electrónico',
+          onChanged: ref.read(loginFormProvider.notifier).onIdentifierChanged,
+          errorMessage:
+              loginForm.isFormPosted ? loginForm.identifier.errorMessage : null,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        CustomTextField(
+          isObscureText: true,
+          label: 'Contraseña',
+          onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
+          onFieldSubmitted: (_) =>
+              ref.read(loginFormProvider.notifier).onFormSubmit(),
+          errorMessage:
+              loginForm.isFormPosted ? loginForm.password.errorMessage : null,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: loginForm.isPosting
+                  ? null
+                  : ref.read(loginFormProvider.notifier).onFormSubmit,
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Color(colors.primary.value),
+                  foregroundColor:  Color(colors.onPrimary.value)),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  'Entrar',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    context.go('/register');
-                  },
-                  child: const Text(
-                    'Crear ahora',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff303030)),
-                  ),
-                )
-              ],
+              ),
+            )),
+        const SizedBox(
+          height: 50,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '¿No tienes cuenta? ',
+              style: TextStyle(
+                  fontSize: 18, color: Color(colors.onSurface.value)),
             ),
+            GestureDetector(
+              onTap: () {
+                context.go('/register');
+              },
+              child: Text(
+                'Crear ahora',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(colors.onSurface.value)),
+              ),
+            )
           ],
         ),
-      )),
-    );
+      ],
+    ));
   }
 }

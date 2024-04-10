@@ -11,84 +11,82 @@ class FormScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final codeState = ref.watch(codeProvider);
     final formState = ref.watch(formProvider);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xff80608B),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      backgroundColor: const Color(0xff80608B),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text('Registro de tutorados',
-                    style: TextStyle(
-                      color: Color(0xffffffff),
-                      fontSize: 24,
-                    )),
-                const SizedBox(
-                  height: 10,
-                ),
-                (codeState.tutor != null)
-                    ? Text(
-                        'Tutor: ${codeState.tutor?.name} ${codeState.tutor?.lastName}',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold))
-                    : Container(),
-                const SizedBox(
-                  height: 10,
-                ),
-                formState.section == 0
-                    ? Container()
-                    : LinearPercentIndicator(
-                        animation: true,
-                        animateFromLastPercent: true,
-                        animationDuration: 1000,
-                        percent: formState.loadingBar,
-                        progressColor: const Color(0xff5A4361),
-                        backgroundColor: const Color(0xffffffff),
-                        barRadius: const Radius.circular(10),
-                        trailing: Text(
-                          '${formState.percentageCompleted}%',
-                          style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w700),
-                        ),
-                      )
-              ],
+    final colors = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(colors.surface.value),
+          iconTheme: IconThemeData(color: Color(colors.onSurface.value)),
+        ),
+        backgroundColor: Color(colors.surface.value),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 20,
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Expanded(
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xff403046).withOpacity(0.20),
-                      offset: const Offset(-4, -4),
-                      blurRadius: 20,
-                      spreadRadius: 1,
-                    )
-                  ],
-                  color: const Color(0xffffffff),
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40))),
-              child: const FormView(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Registro de tutorados',
+                      style: TextStyle(
+                          color: Color(colors.secondary.value),
+                          fontSize: 28,
+                          fontWeight: FontWeight.w500)),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  (codeState.tutor != null)
+                      ? Text(
+                          'Tutor: ${codeState.tutor?.name} ${codeState.tutor?.lastName}',
+                          style: TextStyle(
+                              color: Color(colors.onSurface.value),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500))
+                      : Container(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  formState.section == 0
+                      ? Container()
+                      : LinearPercentIndicator(
+                          animation: true,
+                          animateFromLastPercent: true,
+                          animationDuration: 1000,
+                          lineHeight: 6,
+                          percent: formState.loadingBar,
+                          progressColor: Color(colors.primary.value),
+                          backgroundColor: Color(colors.onSurface.value),
+                          barRadius: const Radius.circular(10),
+                          trailing: Text(
+                            '${formState.percentageCompleted}%',
+                            style: TextStyle(
+                                color: Color(colors.onSurface.value),
+                                fontWeight: FontWeight.w700),
+                          ),
+                        )
+                ],
+              ),
             ),
-          )
-        ],
+            const SizedBox(
+              height: 30,
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: Color(colors.primaryContainer.value),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50))),
+                child: const FormView(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -97,12 +95,14 @@ class FormScreen extends ConsumerWidget {
 class FormView extends ConsumerWidget {
   const FormView({super.key});
 
+  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formState = ref.watch(formProvider);
     return Form(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
         child: SingleChildScrollView(child: renderView(formState.section)),
       ),
     );

@@ -9,17 +9,21 @@ class MedicalDataSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final medicalProvider = ref.watch(medicalDataProvider);
-
+    final colors = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextField(
           label: 'Num. Seguro social',
+          keyboardType: TextInputType.number,
           onChanged:
               ref.read(medicalDataProvider.notifier).onSocialNumberChanged,
           errorMessage: medicalProvider.isFormPosted
               ? medicalProvider.socialSecurityNumber.errorMessage
               : null,
+        ),
+        const SizedBox(
+          height: 20,
         ),
         CustomTextField(
           label: 'Tipo de sangre',
@@ -29,19 +33,22 @@ class MedicalDataSection extends ConsumerWidget {
               : null,
         ),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
-        const Text(
+        Text(
           '¿Padeces alguna enfermedad?',
           style: TextStyle(
-              color: Color(0xff5A4361),
+              color: Color(colors.onPrimaryContainer.value),
               fontWeight: FontWeight.w500,
               fontSize: 16),
         ),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
         const DiseaseOption(),
+        const SizedBox(
+          height: 20,
+        ),
         medicalProvider.disease
             ? CustomTextField(
                 label: '¿Cúal?',
@@ -52,17 +59,20 @@ class MedicalDataSection extends ConsumerWidget {
         const SizedBox(
           height: 10,
         ),
-        const Text(
+        Text(
           '¿Alérgico a algún medicamento y/o otro?',
           style: TextStyle(
-              color: Color(0xff5A4361),
+              color: Color(colors.onPrimaryContainer.value),
               fontWeight: FontWeight.w500,
               fontSize: 16),
         ),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
         const AllergyOption(),
+        const SizedBox(
+          height: 20,
+        ),
         medicalProvider.allergy
             ? CustomTextField(
                 label: '¿Cúal?',
@@ -75,29 +85,30 @@ class MedicalDataSection extends ConsumerWidget {
         ),
         const DisabilityOption(),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
         const SubstanceOption(),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Color(colors.primary.value),
+                  foregroundColor: Color(colors.onPrimary.value)),
               onPressed: medicalProvider.isPosting
                   ? null
                   : ref.read(medicalDataProvider.notifier).onFormSubmit,
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-              ),
-              child: const Icon(
-                Icons.navigate_next,
-                color: Color(0xffffffff),
-              ),
-            ),
-          ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  'Siguiente',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              )),
         ),
       ],
     );
@@ -110,16 +121,24 @@ class DiseaseOption extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final medicalProvider = ref.watch(medicalDataProvider);
+    final colors = Theme.of(context).colorScheme;
 
     return SegmentedButton(
-      style: ButtonStyle(
-        visualDensity: VisualDensity.compact,
-        shape: MaterialStatePropertyAll(
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(12))),
+      style: SegmentedButton.styleFrom(
+        selectedBackgroundColor: Color(colors.primary.value),
+        selectedForegroundColor: Color(colors.onPrimary.value),
+        shape: (ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(12))),
       ),
       segments: const [
-        ButtonSegment(value: false, label: Text('No')),
-        ButtonSegment(value: true, label: Text('Sí')),
+        ButtonSegment(
+            value: false,
+            label: Text(
+              'No',
+              style: TextStyle(fontSize: 16),
+            )),
+        ButtonSegment(
+            value: true, label: Text('Sí', style: TextStyle(fontSize: 16))),
       ],
       selected: {medicalProvider.disease},
       onSelectionChanged: (newSelection) {
@@ -136,18 +155,20 @@ class DisabilityOption extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     final medicalProvider = ref.watch(medicalDataProvider);
 
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFF989898),
+            color: Color(colors.onSurface.value),
             width: 1,
           )),
       child: ListTile(
         onTap: () {
           showModalBottomSheet(
+            showDragHandle: true,
             context: context,
             builder: (context) {
               return const Disability();
@@ -155,15 +176,20 @@ class DisabilityOption extends ConsumerWidget {
           );
         },
         trailing: const Icon(Icons.arrow_drop_down),
-        title: const Text(
+        title: Text(
           '¿Tienes alguna discapacidad?',
+          style: TextStyle(
+            color: Color(colors.onPrimaryContainer.value),
+            fontWeight: FontWeight.w500,
+          ),
         ),
         subtitle: Text(
           medicalProvider.disability
               ? '${medicalProvider.disabilities.first}...'
               : 'Ninguna',
-          style: const TextStyle(
-              color: Color(0xff5A4361), fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Color(colors.secondary.value),
+              fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -176,16 +202,19 @@ class AllergyOption extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final medicalProvider = ref.watch(medicalDataProvider);
-
+    final colors = Theme.of(context).colorScheme;
     return SegmentedButton(
-      style: ButtonStyle(
-        visualDensity: VisualDensity.compact,
-        shape: MaterialStatePropertyAll(
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(12))),
+      style: SegmentedButton.styleFrom(
+        selectedBackgroundColor: Color(colors.primary.value),
+        selectedForegroundColor: Color(colors.onPrimary.value),
+        shape: (ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(12))),
       ),
       segments: const [
-        ButtonSegment(value: false, label: Text('No')),
-        ButtonSegment(value: true, label: Text('Sí')),
+        ButtonSegment(
+            value: false, label: Text('No', style: TextStyle(fontSize: 16))),
+        ButtonSegment(
+            value: true, label: Text('Sí', style: TextStyle(fontSize: 16))),
       ],
       selected: {medicalProvider.allergy},
       onSelectionChanged: (newSelection) {
@@ -202,25 +231,28 @@ class Disability extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     final medicalProvider = ref.watch(medicalDataProvider);
 
-    const activeColor = Color(0xff5A4361);
-    const selectedTileColor = Color(0xffE9DEF8);
     final shape = RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(
-            style: BorderStyle.solid, strokeAlign: 1, color: Colors.black38));
+        side: BorderSide(
+            style: BorderStyle.solid,
+            strokeAlign: 1,
+            color: Color(colors.onSurface.value)));
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
       child: ListView(
         children: [
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: !medicalProvider.disability,
               shape: shape,
-              title: const Text('Ninguna'),
+              title: const Text(
+                'Ninguna',
+              ),
               value: !medicalProvider.disability,
               onChanged: (newValue) {
                 ref.read(medicalDataProvider.notifier).disabilityIsSelected();
@@ -229,11 +261,13 @@ class Disability extends ConsumerWidget {
             height: 10,
           ),
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: medicalProvider.visual,
               shape: shape,
-              title: const Text('Visual'),
+              title: const Text(
+                'Visual',
+              ),
               value: medicalProvider.visual,
               onChanged: (newValue) {
                 ref.read(medicalDataProvider.notifier).visualSelected();
@@ -242,11 +276,13 @@ class Disability extends ConsumerWidget {
             height: 10,
           ),
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: medicalProvider.intellectual,
               shape: shape,
-              title: const Text('Intelectual'),
+              title: const Text(
+                'Intelectual',
+              ),
               value: medicalProvider.intellectual,
               onChanged: (newValue) {
                 ref.read(medicalDataProvider.notifier).intellectualSelected();
@@ -255,11 +291,13 @@ class Disability extends ConsumerWidget {
             height: 10,
           ),
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: medicalProvider.auditory,
               shape: shape,
-              title: const Text('Auditiva'),
+              title: const Text(
+                'Auditiva',
+              ),
               value: medicalProvider.auditory,
               onChanged: (newValue) {
                 ref.read(medicalDataProvider.notifier).auditorySelected();
@@ -268,11 +306,13 @@ class Disability extends ConsumerWidget {
             height: 10,
           ),
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: medicalProvider.physical,
               shape: shape,
-              title: const Text('Física/Motriz'),
+              title: const Text(
+                'Física/Motriz',
+              ),
               value: medicalProvider.physical,
               onChanged: (newValue) {
                 ref.read(medicalDataProvider.notifier).physicalSelected();
@@ -289,6 +329,7 @@ class SubstanceOption extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final medicalProvider = ref.watch(medicalDataProvider);
+    final colors = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
@@ -300,6 +341,7 @@ class SubstanceOption extends ConsumerWidget {
       child: ListTile(
         onTap: () {
           showModalBottomSheet(
+            showDragHandle: true,
             context: context,
             builder: (context) {
               return const Substances();
@@ -307,15 +349,20 @@ class SubstanceOption extends ConsumerWidget {
           );
         },
         trailing: const Icon(Icons.arrow_drop_down),
-        title: const Text(
+        title: Text(
           '¿Consumes sustancias tóxicas?',
+          style: TextStyle(
+            color: Color(colors.onPrimaryContainer.value),
+            fontWeight: FontWeight.w500,
+          ),
         ),
         subtitle: Text(
           medicalProvider.sustance
               ? '${medicalProvider.sustances.first}...'
               : 'Ninguna',
-          style: const TextStyle(
-              color: Color(0xff5A4361), fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Color(colors.secondary.value),
+              fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -328,21 +375,22 @@ class Substances extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final medicalProvider = ref.watch(medicalDataProvider);
+    final colors = Theme.of(context).colorScheme;
 
-    const activeColor = Color(0xff5A4361);
-    const selectedTileColor = Color(0xffE9DEF8);
     final shape = RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(
-            style: BorderStyle.solid, strokeAlign: 1, color: Colors.black38));
+        side: BorderSide(
+            style: BorderStyle.solid,
+            strokeAlign: 1,
+            color: Color(colors.onSurface.value)));
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
       child: ListView(
         children: [
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: !medicalProvider.sustance,
               shape: shape,
               title: const Text('Ninguna'),
@@ -354,8 +402,8 @@ class Substances extends ConsumerWidget {
             height: 10,
           ),
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: medicalProvider.alcohol,
               shape: shape,
               title: const Text('Alcohol'),
@@ -367,8 +415,8 @@ class Substances extends ConsumerWidget {
             height: 10,
           ),
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: medicalProvider.cigar,
               shape: shape,
               title: const Text('Cigarro'),
@@ -380,8 +428,8 @@ class Substances extends ConsumerWidget {
             height: 10,
           ),
           CheckboxListTile(
-              activeColor: activeColor,
-              selectedTileColor: selectedTileColor,
+              activeColor: Color(colors.secondary.value),
+              checkColor: Color(colors.surface.value),
               selected: medicalProvider.drugs,
               shape: shape,
               title: const Text('Drogas'),

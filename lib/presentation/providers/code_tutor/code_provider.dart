@@ -53,7 +53,8 @@ class CodeNotifier extends StateNotifier<CodeState> {
 
   onCodeChanged(String value) {
     final newCode = Input.dirty(value);
-    state = state.copyWith(code: newCode, isCodeEntered: Formz.validate([newCode]));
+    state =
+        state.copyWith(code: newCode, isCodeEntered: Formz.validate([newCode]));
   }
 
   onCodeSubmit() async {
@@ -77,9 +78,7 @@ class CodeNotifier extends StateNotifier<CodeState> {
     } on FormError catch (error) {
       tutorNotValid(error.message);
     }
-    Future.delayed(const Duration(seconds: 3), () {
-      state = state.copyWith(message: '');
-    });
+    state = state.copyWith(message: '');
   }
 
   _setTutor(Tutor tutor) async {

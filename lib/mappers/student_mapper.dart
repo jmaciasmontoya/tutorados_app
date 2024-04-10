@@ -28,9 +28,10 @@ class StudentMapper {
       allergy: json['alergia'],
       sustances: json['sustancias_toxicas'],
       highSchool: json['preparatoria'],
-      average: json['promedio'],
-      scoreCeneval: json['puntuacion_ceneval'],
+      average: (json['promedio'] ?? 0).toDouble(),
+      scoreCeneval: (json['puntuacion_ceneval'] ?? 0).toDouble(),
       workplace: json['trabajo'],
       economicalSupport: json['apoyo_economico'],
-      livesWith: json['convivencia']);
+      livesWith: json['convivencia'],
+      image: json['imagen']);
 }

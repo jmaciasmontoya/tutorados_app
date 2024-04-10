@@ -30,6 +30,7 @@ class Student {
   final String workplace;
   final String economicalSupport;
   final String livesWith;
+  final String image;
 
   Student(
       {required this.name,
@@ -62,5 +63,6 @@ class Student {
       required this.scoreCeneval,
       required this.workplace,
       required this.economicalSupport,
-      required this.livesWith});
+      required this.livesWith,
+      required this.image});
 }

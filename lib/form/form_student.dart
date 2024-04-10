@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:tutorados_app/config/config.dart';
 import 'package:tutorados_app/form/form_error.dart';
 import 'package:tutorados_app/mappers/mappers.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FormStudent {
   late final Dio dio;
@@ -14,7 +17,7 @@ class FormStudent {
 
   Future verifyTutor(String id) async {
     try {
-      final response = await dio.get('/tutor/verify/$id');
+      final response = await dio.get('/student/verify/tutor/$id');
       final tutor = TutorMapper.userJsonToEntity(response.data);
       return tutor;
     } on DioException catch (error) {
@@ -272,6 +275,36 @@ class FormStudent {
       final response = await dio.post('/student/image/$studentId', data: data);
       final image = response.data;
       return image;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 500) {
+        throw FormError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw FormError('Revisa tu conexión a internet');
+      }
+      throw FormError('Algo no salió bien');
+    } catch (error) {
+      throw FormError('Algo malo pasó');
+    }
+  }
+
+  Future downloadFile(String studentId, String typeFile) async {
+    try {
+      final response = await dio.get('/files/student/$studentId/$typeFile',
+          options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+          ));
+
+      final bytes = response.data;
+      final directory = await getExternalStorageDirectory();
+      final filePath = '${directory!.path}/$studentId.$typeFile';
+
+      File file = File(filePath);
+      await file.writeAsBytes(bytes);
+
+      return file;
     } on DioException catch (error) {
       if (error.response?.statusCode == 500) {
         throw FormError(

@@ -9,7 +9,7 @@ class AcademicDataSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final academicProvider = ref.watch(academicDataProvider);
-
+    final colors = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -21,6 +21,9 @@ class AcademicDataSection extends ConsumerWidget {
           onChanged:
               ref.read(academicDataProvider.notifier).onHighSchoolChanged,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
           label: 'Promedio general',
           errorMessage: (academicProvider.messageAverage != '')
@@ -30,17 +33,22 @@ class AcademicDataSection extends ConsumerWidget {
           onChanged: ref.read(academicDataProvider.notifier).onAverageChanged,
         ),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
-        const Text(
+        Text(
           'Puntuación examen CENEVAL',
           style: TextStyle(
-              color: Color(0xff5A4361),
+              color: Color(colors.onPrimaryContainer.value),
               fontWeight: FontWeight.w500,
               fontSize: 16),
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
-          hint: 'Puntuación',
+          keyboardType: TextInputType.number,
+          onFieldSubmitted: (_) => ref.read(academicDataProvider.notifier).onFormSubmit(),
+          label: 'Puntuación',
           errorMessage: (academicProvider.messageScore != '')
               ? academicProvider.messageScore
               : null,
@@ -49,23 +57,24 @@ class AcademicDataSection extends ConsumerWidget {
         const SizedBox(
           height: 20,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Color(colors.primary.value),
+                  foregroundColor: Color(colors.onPrimary.value)),
               onPressed: academicProvider.isPosting
                   ? null
                   : ref.read(academicDataProvider.notifier).onFormSubmit,
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-              ),
-              child: const Icon(
-                Icons.navigate_next,
-                color: Color(0xffffffff),
-              ),
-            ),
-          ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  'Siguiente',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              )),
         ),
       ],
     );

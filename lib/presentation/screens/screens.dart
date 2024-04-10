@@ -6,3 +6,6 @@ export 'form_screen.dart';
 export 'tutor_screen.dart';
 export 'tutored_screen.dart';
 export 'student_screen.dart';
+export 'admin/admin_screen.dart';
+export 'admin/tutors_screen.dart';
+export 'admin/register_tutor.dart';

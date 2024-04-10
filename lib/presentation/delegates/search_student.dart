@@ -37,15 +37,18 @@ class SearchStudent extends SearchDelegate {
         future: searchStudent(query),
         builder: (context, snapshot) {
           final students = snapshot.data ?? [];
-          return ListView.builder(
-            itemCount: students.length,
-            itemBuilder: (context, index) {
-              final student = students[index];
-              return StudentItem(
-                onStudentSelected: close,
-                student: student,
-              );
-            },
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: ListView.builder(
+              itemCount: students.length,
+              itemBuilder: (context, index) {
+                final student = students[index];
+                return StudentItem(
+                  onStudentSelected: close,
+                  student: student,
+                );
+              },
+            ),
           );
         });
   }
@@ -63,44 +66,46 @@ class StudentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {
-          onStudentSelected(context, student);
-        },
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          margin: const EdgeInsetsDirectional.only(bottom: 10),
-          width: double.maxFinite,
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(5)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    student['usuario_id'],
-                    style: const TextStyle(
-                        color: Color(0xff303030), fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    '${student['nombre']} ${student['apellido']}',
-                  ),
-                  Text(
-                    student['correo'],
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: 50,
-                height: 50,
-                child: _ImageViewer(image: student['imagen']),
-              )
-            ],
-          ),
+    final colors = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: () {
+        onStudentSelected(context, student);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsetsDirectional.only(bottom: 10),
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+            color: Color(colors.primaryContainer.value),
+            borderRadius: BorderRadius.circular(12)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  student['usuario_id'],
+                  style: TextStyle(
+                      color: Color(colors.secondary.value),
+                      fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  '${student['nombre']} ${student['apellido']}',
+                  style: TextStyle(color: Color(colors.onPrimaryContainer.value)),
+                ),
+                Text(
+                  student['correo'],
+                   style: TextStyle(color: Color(colors.onPrimaryContainer.value)),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 50,
+              height: 50,
+              child: _ImageViewer(image: student['imagen']),
+            )
+          ],
         ),
       ),
     );

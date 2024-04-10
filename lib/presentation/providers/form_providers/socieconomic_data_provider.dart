@@ -72,6 +72,9 @@ class SocioeconomicDataNotifier extends StateNotifier<SocioeconomicDataState> {
   onAnotherOption(String value) {
     state = state.copyWith(livesWith: value);
     anotherOption.text = value;
+    if (anotherOption.text.isEmpty) {
+      state = state.copyWith(livesWith: 'Solo');
+    }
   }
 
   onFormSubmit() {

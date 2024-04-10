@@ -9,14 +9,14 @@ class SocioeconomicDataSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final socioeconomicProvider = ref.watch(socioeconomicDataProvider);
-
+    final colors = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '¿Actualmente trabajas?',
           style: TextStyle(
-              color: Color(0xff5A4361),
+              color: Color(colors.onPrimaryContainer.value),
               fontWeight: FontWeight.w500,
               fontSize: 16),
         ),
@@ -24,9 +24,13 @@ class SocioeconomicDataSection extends ConsumerWidget {
           height: 20,
         ),
         const WorkOption(),
+        const SizedBox(
+          height: 20,
+        ),
         socioeconomicProvider.work
             ? CustomTextField(
                 label: '¿Dónde?',
+                isFormStudent: true,
                 onChanged: ref
                     .read(socioeconomicDataProvider.notifier)
                     .onWorkplaceChanged,
@@ -35,10 +39,10 @@ class SocioeconomicDataSection extends ConsumerWidget {
         const SizedBox(
           height: 20,
         ),
-        const Text(
+        Text(
           '¿Cuenta con apoyo económico para sus estudios?',
           style: TextStyle(
-              color: Color(0xff5A4361),
+              color: Color(colors.onPrimaryContainer.value),
               fontWeight: FontWeight.w500,
               fontSize: 16),
         ),
@@ -47,18 +51,19 @@ class SocioeconomicDataSection extends ConsumerWidget {
         ),
         const EconomicalSupportOption(),
         const SizedBox(
-          height: 20,
+          height: 30,
         ),
         Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFF989898),
+                color: Color(colors.onSurface.value),
                 width: 1,
               )),
           child: ListTile(
             onTap: () {
               showModalBottomSheet(
+                showDragHandle: true,
                 isScrollControlled: true,
                 context: context,
                 builder: (context) {
@@ -67,36 +72,41 @@ class SocioeconomicDataSection extends ConsumerWidget {
               );
             },
             trailing: const Icon(Icons.arrow_drop_down),
-            title: const Text(
+            title: Text(
               '¿Con quién vives actualmente?',
+              style: TextStyle(
+                  color: Color(colors.onPrimaryContainer.value),
+                  fontWeight: FontWeight.w500),
             ),
             subtitle: Text(
               socioeconomicProvider.livesWith,
-              style: const TextStyle(
-                  color: Color(0xff5A4361), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Color(colors.secondary.value),
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),
         const SizedBox(
           height: 20,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Color(colors.primary.value),
+                  foregroundColor: Color(colors.onPrimary.value)),
               onPressed: socioeconomicProvider.isPosting
                   ? null
                   : ref.read(socioeconomicDataProvider.notifier).onFormSubmit,
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-              ),
-              child: const Icon(
-                Icons.navigate_next,
-                color: Color(0xffffffff),
-              ),
-            ),
-          ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  'Siguiente',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              )),
         ),
       ],
     );
@@ -109,12 +119,14 @@ class WorkOption extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final socioeconomicProvider = ref.watch(socioeconomicDataProvider);
+    final colors = Theme.of(context).colorScheme;
 
     return SegmentedButton(
-      style: ButtonStyle(
-        visualDensity: VisualDensity.compact,
-        shape: MaterialStatePropertyAll(
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(12))),
+      style: SegmentedButton.styleFrom(
+        selectedBackgroundColor: Color(colors.primary.value),
+        selectedForegroundColor: Color(colors.onPrimary.value),
+        shape: (ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(12))),
       ),
       segments: const [
         ButtonSegment(value: false, label: Text('No')),
@@ -136,12 +148,13 @@ class EconomicalSupportOption extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final socioeconomicProvider = ref.watch(socioeconomicDataProvider);
-
+    final colors = Theme.of(context).colorScheme;
     return SegmentedButton(
-      style: ButtonStyle(
-        visualDensity: VisualDensity.compact,
-        shape: MaterialStatePropertyAll(
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(12))),
+      style: SegmentedButton.styleFrom(
+        selectedBackgroundColor: Color(colors.primary.value),
+        selectedForegroundColor: Color(colors.onPrimary.value),
+        shape: (ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(12))),
       ),
       segments: const [
         ButtonSegment(value: false, label: Text('No')),
@@ -163,26 +176,26 @@ class Coexistence extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final socioeconomicProvider = ref.watch(socioeconomicDataProvider);
+    final colors = Theme.of(context).colorScheme;
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
-    const activeColor = Color(0xff5A4361);
-    const selectedTileColor = Color(0xffE9DEF8);
     final shape = RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(
-            style: BorderStyle.solid, strokeAlign: 1, color: Colors.black38));
+        side: BorderSide(
+            style: BorderStyle.solid,
+            strokeAlign: 1,
+            color: Color(colors.onSurface.value)));
 
     return Padding(
       padding: mediaQueryData.viewInsets,
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
+          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               RadioListTile(
                 selected: socioeconomicProvider.livesWith == 'Solo',
-                activeColor: activeColor,
-                selectedTileColor: selectedTileColor,
+                activeColor: Color(colors.secondary.value),
                 shape: shape,
                 value: 'Solo',
                 title: const Text('Solo'),
@@ -191,6 +204,7 @@ class Coexistence extends ConsumerWidget {
                   ref
                       .read(socioeconomicDataProvider.notifier)
                       .onLiveWithChanged(newValue.toString());
+                      Navigator.of(context).pop();
                 },
               ),
               const SizedBox(
@@ -198,8 +212,7 @@ class Coexistence extends ConsumerWidget {
               ),
               RadioListTile(
                   selected: socioeconomicProvider.livesWith == 'Padres',
-                  activeColor: activeColor,
-                  selectedTileColor: selectedTileColor,
+                  activeColor: Color(colors.secondary.value),
                   shape: shape,
                   value: 'Padres',
                   title: const Text('Padres'),
@@ -208,14 +221,14 @@ class Coexistence extends ConsumerWidget {
                     ref
                         .read(socioeconomicDataProvider.notifier)
                         .onLiveWithChanged(newValue.toString());
+                        Navigator.of(context).pop();
                   }),
               const SizedBox(
                 height: 10,
               ),
               RadioListTile(
                   selected: socioeconomicProvider.livesWith == 'Amigos',
-                  activeColor: activeColor,
-                  selectedTileColor: selectedTileColor,
+                  activeColor: Color(colors.secondary.value),
                   shape: shape,
                   value: 'Amigos',
                   title: const Text('Amigos'),
@@ -224,6 +237,7 @@ class Coexistence extends ConsumerWidget {
                     ref
                         .read(socioeconomicDataProvider.notifier)
                         .onLiveWithChanged(newValue.toString());
+                        Navigator.of(context).pop();
                   }),
               const SizedBox(
                 height: 10,
@@ -231,8 +245,7 @@ class Coexistence extends ConsumerWidget {
               RadioListTile(
                   selected:
                       socioeconomicProvider.livesWith == 'Uno de sus padres',
-                  activeColor: activeColor,
-                  selectedTileColor: selectedTileColor,
+                  activeColor: Color(colors.secondary.value),
                   shape: shape,
                   value: 'Uno de sus padres',
                   title: const Text('Uno de sus padres'),
@@ -241,14 +254,14 @@ class Coexistence extends ConsumerWidget {
                     ref
                         .read(socioeconomicDataProvider.notifier)
                         .onLiveWithChanged(newValue.toString());
+                        Navigator.of(context).pop();
                   }),
               const SizedBox(
                 height: 10,
               ),
               RadioListTile(
                   selected: socioeconomicProvider.livesWith == 'Pareja',
-                  activeColor: activeColor,
-                  selectedTileColor: selectedTileColor,
+                  activeColor: Color(colors.secondary.value),
                   shape: shape,
                   value: 'Pareja',
                   title: const Text('Pareja'),
@@ -257,6 +270,7 @@ class Coexistence extends ConsumerWidget {
                     ref
                         .read(socioeconomicDataProvider.notifier)
                         .onLiveWithChanged(newValue.toString());
+                        Navigator.of(context).pop();
                   }),
               const SizedBox(
                 height: 10,

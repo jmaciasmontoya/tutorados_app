@@ -8,12 +8,14 @@ class SecondSectionOfStudentData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     final secondStudentData = ref.watch(secondStudentDataProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextField(
+          isFormStudent: true,
           errorMessage: secondStudentData.birthDate.errorMessage,
           label: 'Fecha de nacimiento',
           controller:
@@ -33,20 +35,33 @@ class SecondSectionOfStudentData extends ConsumerWidget {
             }
           },
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
+          isFormStudent: true,
           errorMessage: secondStudentData.placeOfBirth.errorMessage,
           label: 'Lugar de nacimiento',
           onChanged: ref
               .read(secondStudentDataProvider.notifier)
               .onPlaceOfBirthChanged,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
+          isFormStudent: true,
           label: 'Edad',
+          keyboardType: TextInputType.number,
           controller:
               ref.read(secondStudentDataProvider.notifier).ageController,
           onChanged: ref.read(secondStudentDataProvider.notifier).onAgeChanged,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
+          isFormStudent: true,
           label: 'Religión',
           hint: 'Ninguna',
           onChanged:
@@ -55,44 +70,56 @@ class SecondSectionOfStudentData extends ConsumerWidget {
         const SizedBox(
           height: 20,
         ),
-        const Text(
+        Text(
           'Actividad cultural o deportiva que practiques',
           style: TextStyle(
-              color: Color(0xff5A4361),
+              color: Color(colors.onPrimaryContainer.value),
               fontWeight: FontWeight.w500,
               fontSize: 16),
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
+          isFormStudent: true,
+          label: 'Actividad',
           hint: 'Ninguna',
           onChanged:
               ref.read(secondStudentDataProvider.notifier).onActivityChanged,
         ),
+        const SizedBox(
+          height: 20,
+        ),
         CustomTextField(
+          isFormStudent: true,
           errorMessage: secondStudentData.tutor.errorMessage,
           label: 'Tutor o padre de familia',
+          onFieldSubmitted: (_) =>
+              ref.read(secondStudentDataProvider.notifier).onFormSubmit(),
           onChanged:
               ref.read(secondStudentDataProvider.notifier).onTutorChanged,
         ),
         const SizedBox(
           height: 20,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Color(colors.primary.value),
+                  foregroundColor: Color(colors.onPrimary.value)),
               onPressed: secondStudentData.isPosting
                   ? null
                   : ref.read(secondStudentDataProvider.notifier).onFormSubmit,
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xff5A4361)),
-              ),
-              child: const Icon(
-                Icons.navigate_next,
-                color: Color(0xffffffff),
-              ),
-            ),
-          ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  'Siguiente',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              )),
         ),
       ],
     );

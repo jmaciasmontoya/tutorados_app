@@ -40,16 +40,17 @@ class TutoredView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tutoredState = ref.watch(tutoredProvider);
+    final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Mis tutorados',
+          Text('Mis tutorados',
               style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 36,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xff403046))),
+                  color: Color(colors.secondary.value))),
           const SizedBox(
             height: 20,
           ),
@@ -69,6 +70,7 @@ class TutoredSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
     final ScrollController scrollController = ScrollController();
 
     scrollController.addListener(() {
@@ -78,8 +80,12 @@ class TutoredSection extends ConsumerWidget {
       }
     });
     return students.isEmpty
-        ? const Center(
-            child: Text('No hay alumnos registrados'),
+        ? Center(
+            child: Text(
+              'No hay alumnos registrados',
+              style: TextStyle(
+                  fontSize: 18, color: Color(colors.onSurface.value)),
+            ),
           )
         : ListView.builder(
             controller: scrollController,
@@ -118,12 +124,14 @@ class CardTutored extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsetsDirectional.only(bottom: 10),
       width: double.maxFinite,
       decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(5)),
+          color: Color(colors.primaryContainer.value),
+          borderRadius: BorderRadius.circular(12)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -132,14 +140,17 @@ class CardTutored extends StatelessWidget {
             children: [
               Text(
                 studentEnrollment,
-                style: const TextStyle(
-                    color: Color(0xff303030), fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    color: Color(colors.secondary.value),
+                    fontWeight: FontWeight.w700),
               ),
               Text(
                 '$name $lastName',
+                style: TextStyle(color: Color(colors.onPrimaryContainer.value)),
               ),
               Text(
                 email,
+                style: TextStyle(color: Color(colors.onPrimaryContainer.value)),
               ),
             ],
           ),

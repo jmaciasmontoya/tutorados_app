@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tutorados_app/form/form_student.dart';
 import 'package:tutorados_app/presentation/providers/providers.dart';
 import 'package:tutorados_app/presentation/providers/form_providers/socieconomic_data_provider.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 
 enum FormStatus { checking, completed, notCompleted }
 
@@ -11,13 +12,19 @@ class FormState {
   final double loadingBar;
   final int percentageCompleted;
   final int savedProgress;
+  final String pathFile;
+  final bool pdfIsDownloading;
+  final bool isFileDownloaded;
 
   FormState(
       {this.formStatus = FormStatus.checking,
       this.section = 0,
       this.loadingBar = 0.0,
       this.percentageCompleted = 0,
-      this.savedProgress = 0});
+      this.savedProgress = 0,
+      this.pathFile = '',
+      this.pdfIsDownloading = false,
+      this.isFileDownloaded = false});
 
   FormState copyWith({
     FormStatus? formStatus,
@@ -25,13 +32,19 @@ class FormState {
     double? loadingBar,
     int? percentageCompleted,
     int? savedProgress,
+    String? pathFile,
+    bool? pdfIsDownloading,
+    bool? isFileDownloaded,
   }) =>
       FormState(
           formStatus: formStatus ?? this.formStatus,
           section: section ?? this.section,
           loadingBar: loadingBar ?? this.loadingBar,
           percentageCompleted: percentageCompleted ?? this.percentageCompleted,
-          savedProgress: savedProgress ?? this.savedProgress);
+          savedProgress: savedProgress ?? this.savedProgress,
+          pathFile: pathFile ?? this.pathFile,
+          pdfIsDownloading: pdfIsDownloading ?? this.pdfIsDownloading,
+          isFileDownloaded: isFileDownloaded ?? this.isFileDownloaded);
 }
 
 class FormNotifier extends StateNotifier<FormState> {
@@ -88,7 +101,10 @@ class FormNotifier extends StateNotifier<FormState> {
   }
 
   formCompleted() {
-    state = state.copyWith(formStatus: FormStatus.completed, loadingBar: 1, percentageCompleted: 100);
+    state = state.copyWith(
+        formStatus: FormStatus.completed,
+        loadingBar: 1,
+        percentageCompleted: 100);
   }
 
   calcPercentage() {
@@ -111,6 +127,32 @@ class FormNotifier extends StateNotifier<FormState> {
         return 100;
       default:
     }
+  }
+
+  getFile(String typeFile) async {
+    if (typeFile == 'pdf') {
+      state = state.copyWith(pdfIsDownloading: true);
+    }
+
+    try {
+      final file = await formStudent.downloadFile(userData.user!.id, typeFile);
+      state = state.copyWith(pathFile: file.path, isFileDownloaded: true);
+    } catch (e) {
+      state = state.copyWith(
+          pdfIsDownloading: false, pathFile: '', isFileDownloaded: false);
+    }
+  }
+
+  openFile() async {
+    await OpenFile.open(state.pathFile);
+  }
+
+  closeFileInfo() {
+    state = state.copyWith(
+      pdfIsDownloading: false,
+      pathFile: '',
+      isFileDownloaded: false,
+    );
   }
 }
 

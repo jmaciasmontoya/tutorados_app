@@ -12,3 +12,5 @@ export 'tutored_provider.dart';
 export 'student_provider.dart';
 export 'form_providers/photo_provider.dart';
 export 'search_provider.dart';
+export 'admin_providers/register_tutor_provider.dart';
+export 'admin_providers/tutors_provider.dart';

@@ -1,45 +1,45 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tutorados_app/admin/admin_data.dart';
 import 'package:tutorados_app/presentation/providers/providers.dart';
-import 'package:tutorados_app/tutor/tutor_data.dart';
 
-class TutoredState {
-  final List students;
+class TutorsState {
   final bool isLoading;
   final int limit;
   final int offset;
   final bool isLastPage;
   final String message;
+  final List tutors;
 
-  TutoredState(
-      {this.students = const [],
-      this.isLoading = false,
+  TutorsState(
+      {this.isLoading = false,
       this.offset = 0,
       this.limit = 10,
       this.isLastPage = false,
-      this.message = ''});
+      this.message = '',
+      this.tutors = const []});
 
-  TutoredState copyWith({
-    List? students,
+  TutorsState copyWith({
     bool? isLoading,
     int? limit,
     int? offset,
     bool? isLastPage,
     String? message,
+    List? tutors,
   }) =>
-      TutoredState(
-          students: students ?? this.students,
+      TutorsState(
           isLoading: isLoading ?? this.isLoading,
           limit: limit ?? this.limit,
           offset: offset ?? this.offset,
           isLastPage: isLastPage ?? this.isLastPage,
-          message: message ?? this.message);
+          message: message ?? this.message,
+          tutors: tutors ?? this.tutors);
 }
 
-class TutoredNotifier extends StateNotifier<TutoredState> {
+class TutorsNotifier extends StateNotifier<TutorsState> {
   final AuthState userData;
-  final TutorData tutorData;
-  TutoredNotifier({required this.userData, required this.tutorData})
-      : super(TutoredState()) {
+  final AdminData adminData;
+  TutorsNotifier({required this.userData, required this.adminData})
+      : super(TutorsState()) {
     loadNextPage();
   }
 
@@ -49,22 +49,20 @@ class TutoredNotifier extends StateNotifier<TutoredState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final students = await tutorData.getAllStudents(
-          userData.user!.id, state.limit, state.offset);
+      final tutors = await adminData.getAllTutors(state.limit, state.offset);
 
-      if (students.isEmpty) {
+      if (tutors.isEmpty) {
         state = state.copyWith(
             isLoading: false,
             isLastPage: true,
-            message: 'No hay alumnos registrados');
+            message: 'No hay tutores registrados');
         return;
       }
       state = state.copyWith(
           isLastPage: false,
           isLoading: false,
           offset: state.offset + 10,
-          students: [...state.students, ...students]);
-          
+          tutors: [...state.tutors, ...tutors]);
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -74,10 +72,10 @@ class TutoredNotifier extends StateNotifier<TutoredState> {
   }
 }
 
-final tutoredProvider =
-    StateNotifierProvider.autoDispose<TutoredNotifier, TutoredState>((ref) {
+final tutorsProvider =
+    StateNotifierProvider.autoDispose<TutorsNotifier, TutorsState>((ref) {
   final userData = ref.watch(authProvider);
   final accessToken = ref.watch(authProvider).user?.token ?? '';
-  final tutorData = TutorData(accessToken: accessToken);
-  return TutoredNotifier(userData: userData, tutorData: tutorData);
+  final adminData = AdminData(accessToken: accessToken);
+  return TutorsNotifier(userData: userData, adminData: adminData);
 });
