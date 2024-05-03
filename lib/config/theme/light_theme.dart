@@ -6,6 +6,7 @@ ThemeData lightTheme = ThemeData(
     surface: Color(0xfffcfcfc),
     primary: Color(0xff725F96),
     secondary: Color(0xFF675687),
+    tertiary: Color(0xffc7bfd5),
     primaryContainer: Color(0xfff1eff5),
     secondaryContainer: Color(0xFFEFEFEF),
     tertiaryContainer: Color(0xffffffff),

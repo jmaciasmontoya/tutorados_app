@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tutorados_app/presentation/providers/auth_providers/auth_provider.dart';
+import 'package:flutter/services.dart';
 
 class SideMenu extends ConsumerWidget {
   const SideMenu({super.key});
@@ -15,12 +16,20 @@ class SideMenu extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${userState.user?.id}',
-              style: TextStyle(
-                  color: Color(colors.secondary.value),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold),
+            GestureDetector(
+              onTap: () => {_copyTutorInfoToClipboard(userState.user?.id, context)},
+              child: Row(
+                children: [
+                  Text(
+                    '${userState.user?.id}',
+                    style: TextStyle(
+                        color: Color(colors.secondary.value),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Icon(Icons.copy, color: Color(colors.secondary.value),size: 16,)
+                ],
+              ),
             ),
             Text(
               '${userState.user?.name} ${userState.user?.lastName}',
@@ -56,5 +65,9 @@ class SideMenu extends ConsumerWidget {
         ),
       ),
     ]);
+  }
+  void _copyTutorInfoToClipboard(String? code, BuildContext context) {
+    String clipboardText = "$code";
+    Clipboard.setData(ClipboardData(text: clipboardText));
   }
 }

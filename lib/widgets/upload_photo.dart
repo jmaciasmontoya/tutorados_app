@@ -18,12 +18,25 @@ class UploadPhoto extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text('Para terminar, por favor',
+        Text('Para terminar, por favor sube una fotografía tuya',
             style: TextStyle(
                 color: Color(colors.onPrimaryContainer.value),
                 fontSize: 16,
                 fontWeight: FontWeight.w500)),
-        Text('sube una fotografía tuya ',
+        const SizedBox(
+          height: 20,
+        ),
+        Text('Recomendaciones',
+            style: TextStyle(
+                color: Color(colors.onPrimaryContainer.value),
+                fontSize: 16,
+                fontWeight: FontWeight.w700)),
+        Text('Foto de frente, rostro descubierto,',
+            style: TextStyle(
+                color: Color(colors.onPrimaryContainer.value),
+                fontSize: 16,
+                fontWeight: FontWeight.w500)),
+        Text('tomada de los hombros hacia arriba',
             style: TextStyle(
                 color: Color(colors.onPrimaryContainer.value),
                 fontSize: 16,

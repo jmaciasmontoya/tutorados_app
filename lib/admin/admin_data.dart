@@ -11,13 +11,11 @@ class AdminData {
             baseUrl: Environment.apiUrl,
             headers: {'Authorization': 'Bearer $accessToken'}));
 
-  Future registerTutor(String name, String lastName, String email) async {
+  Future registerTutor(String name, String lastName) async {
     try {
       final response = await dio.post('/admin/tutor/register', data: {
         "name": name,
         "lastName": lastName,
-        "email": email,
-        "roleName": "Tutor"
       });
 
       final tutorInfo = response.data;
@@ -43,7 +41,7 @@ class AdminData {
     }
   }
 
-  Future getAllTutors( int limit, int offset) async {
+  Future getAllTutors(int limit, int offset) async {
     try {
       final response =
           await dio.get('/admin/tutors?limit=$limit&offset=$offset');
@@ -57,6 +55,24 @@ class AdminData {
         throw AdminError(error.response?.data['message'] ??
             'Todos los campos son requeridos');
       }
+      if (error.response?.statusCode == 500) {
+        throw AdminError(
+            error.response?.data['message'] ?? 'Se ha producido un error');
+      }
+      if (error.type == DioExceptionType.connectionError) {
+        throw AdminError('Revisa tu conexión a internet');
+      }
+      throw AdminError('Algo no salió bien');
+    } catch (error) {
+      throw AdminError('Algo malo pasó');
+    }
+  }
+
+  Future getCodes() async {
+    try {
+      final response = await dio.get('/admin/codes');
+      return response.data;
+    } on DioException catch (error) {
       if (error.response?.statusCode == 500) {
         throw AdminError(
             error.response?.data['message'] ?? 'Se ha producido un error');

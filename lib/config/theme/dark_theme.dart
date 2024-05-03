@@ -6,6 +6,7 @@ ThemeData darkTheme = ThemeData(
     surface: Color(0xff121212),
     primary: Color(0xff725F96),
     secondary: Color(0xFFD3BBFF),
+    tertiary: Color(0xffc7bfd5),
     primaryContainer: Color(0xFF2F2F2F), //Cards
     secondaryContainer: Color(0xff3c3c3c), //FormInput
     tertiaryContainer: Color(0xFF474747), //FormInput form

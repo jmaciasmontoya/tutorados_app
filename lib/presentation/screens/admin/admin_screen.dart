@@ -24,7 +24,6 @@ class AdminScreen extends ConsumerWidget {
       endDrawer: const SideMenu(),
       body: const HomeAdminView(),
     );
-    ;
   }
 }
 

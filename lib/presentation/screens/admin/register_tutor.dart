@@ -1,43 +1,154 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tutorados_app/presentation/providers/providers.dart';
 import 'package:tutorados_app/widgets/widgets.dart';
 
-class RegisterTutorScreen extends StatelessWidget {
+class RegisterTutorScreen extends ConsumerWidget {
   const RegisterTutorScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
+    final codesState = ref.watch(codesProvider);
     return Scaffold(
       backgroundColor: Color(colors.surface.value),
       appBar: AppBar(
         backgroundColor: Color(colors.surface.value),
         iconTheme: IconThemeData(color: Color(colors.onSurface.value)),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: Text('Registrar tutor',
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return const _RegisterForm();
+              });
+        },
+        icon: Icon(
+          Icons.person,
+          color: Color(colors.onPrimary.value),
+        ),
+        label: Text(
+          'Generar código',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(colors.onPrimary.value)),
+        ),
+        backgroundColor: Color(colors.primary.value),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Códigos generados',
                 style: TextStyle(
-                    color: Color(colors.secondary.value),
-                    fontSize: 32,
-                    fontWeight: FontWeight.w500)),
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Color(colors.primaryContainer.value),
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50))),
-              child: const Center(child: _RegisterForm()),
+                    fontSize: 36,
+                    fontWeight: FontWeight.w500,
+                    color: Color(colors.secondary.value))),
+            const SizedBox(
+              height: 20,
+            ),
+            Expanded(
+                child: CodesSection(
+              codes: codesState.codes,
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CodesSection extends ConsumerWidget {
+  final List codes;
+  const CodesSection({super.key, required this.codes});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = Theme.of(context).colorScheme;
+
+    return codes.isEmpty
+        ? Center(
+            child: Text(
+              'No hay códigos generados',
+              style:
+                  TextStyle(fontSize: 18, color: Color(colors.onSurface.value)),
             ),
           )
+        : ListView.builder(
+            itemCount: codes.length,
+            itemBuilder: (context, index) {
+              final code = codes[index];
+              return GestureDetector(
+                onTap: () => {_copyTutorInfoToClipboard(code, context)},
+                child: CardCode(
+                  tutorId: code['codigo'],
+                  name: code['tutor_nombre'],
+                  lastName: code['tutor_apellido'],
+                ),
+              );
+            },
+          );
+  }
+
+  void _copyTutorInfoToClipboard(
+      Map<String, dynamic> code, BuildContext context) {
+    String clipboardText =
+        "${code['codigo']}\n${code['tutor_nombre']} ${code['tutor_apellido']}";
+    Clipboard.setData(ClipboardData(text: clipboardText));
+  }
+}
+
+class CardCode extends StatelessWidget {
+  final String tutorId;
+  final String name;
+  final String lastName;
+
+  const CardCode({
+    super.key,
+    required this.tutorId,
+    required this.name,
+    required this.lastName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsetsDirectional.only(bottom: 10),
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        color: Color(colors.primaryContainer.value),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                tutorId,
+                style: TextStyle(
+                  color: Color(colors.secondary.value),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '$name $lastName',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color(colors.onPrimaryContainer.value),
+                ),
+              ),
+            ],
+          ),
+          const Spacer(), // Esto empujará el icono de copiar hacia la derecha
+          Icon(Icons.copy, color: colors.onPrimaryContainer,),
         ],
       ),
     );
@@ -47,46 +158,30 @@ class RegisterTutorScreen extends StatelessWidget {
 class _RegisterForm extends ConsumerWidget {
   const _RegisterForm();
 
-  void showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(registerTutorProvider, (previous, next) {
-      if (next.message.isEmpty) return;
-      showSnackBar(context, next.message);
-    });
-
-    void showDialogInfo(BuildContext context) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const TutorInfo();
-        },
-      ).then((value) => {
-            ref.read(registerTutorProvider.notifier).closeModal(),
-            FocusScope.of(context).requestFocus(FocusNode())
-          });
-    }
-
-    ref.listen(registerTutorProvider, (previous, next) {
       if (next.userRegistred == false) return;
-      showDialogInfo(context);
+      ref.read(codesProvider.notifier).loadCodes();
+      context.pop();
     });
 
     final registerTutorState = ref.watch(registerTutorProvider);
     final colors = Theme.of(context).colorScheme;
-    return Form(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: SingleChildScrollView(
+    return AlertDialog(
+      content: Form(
+          child: SingleChildScrollView(
         child: Column(
           children: [
+            Text('Datos del tutor',
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                    color: Color(colors.secondary.value))),
+            const SizedBox(
+              height: 20,
+            ),
             CustomTextField(
-              isFormStudent: true,
               label: 'Nombre',
               onChanged: ref.read(registerTutorProvider.notifier).onNameChange,
               errorMessage: registerTutorState.isFormPosted
@@ -97,23 +192,11 @@ class _RegisterForm extends ConsumerWidget {
               height: 20,
             ),
             CustomTextField(
-              isFormStudent: true,
               label: 'Apellido',
               onChanged:
                   ref.read(registerTutorProvider.notifier).onLastNameChange,
               errorMessage: registerTutorState.isFormPosted
                   ? registerTutorState.lastName.errorMessage
-                  : null,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomTextField(
-              isFormStudent: true,
-              label: 'Correo electrónico',
-              onChanged: ref.read(registerTutorProvider.notifier).onEmailChange,
-              errorMessage: registerTutorState.isFormPosted
-                  ? registerTutorState.email.errorMessage
                   : null,
             ),
             const SizedBox(
@@ -133,7 +216,7 @@ class _RegisterForm extends ConsumerWidget {
                   child: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 15),
                     child: Text(
-                      'Registrar',
+                      'Aceptar',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -141,104 +224,7 @@ class _RegisterForm extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    ));
-  }
-}
-
-class TutorInfo extends ConsumerWidget {
-  const TutorInfo({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tutorInfoState = ref.watch(registerTutorProvider);
-    final colors = Theme.of(context).colorScheme;
-    final styles = TextStyle(
-        color: Color(colors.secondary.value),
-        fontWeight: FontWeight.w700,
-        fontSize: 16);
-    return AlertDialog(
-        backgroundColor: Color(colors.primaryContainer.value),
-        title: Center(
-            child: Text(
-          'Información del tutor',
-          style: TextStyle(color: Color(colors.onPrimaryContainer.value)),
-        )),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          TextButton.icon(
-              onPressed: () {
-                ref.read(registerTutorProvider.notifier).closeModal();
-                Navigator.of(context).pop();
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              icon: Icon(
-                Icons.check,
-                color: Color(colors.secondary.value),
-              ),
-              label: Text(
-                'Aceptar',
-                style: TextStyle(color: Color(colors.secondary.value)),
-              ))
-        ],
-        content: SizedBox(
-          width: double.maxFinite,
-          height: 280,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Codigo: ',
-                style: styles,
-              ),
-              Text(
-                '${tutorInfoState.tutorInfo['usuario_id']}',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Color(colors.onPrimaryContainer.value)),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text('Nombre: ', style: styles),
-              Text(
-                '${tutorInfoState.tutorInfo['nombre']}',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Color(colors.onPrimaryContainer.value)),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text('Apellido:', style: styles),
-              Text(
-                ' ${tutorInfoState.tutorInfo['apellido']}',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Color(colors.onPrimaryContainer.value)),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text('Correo: ', style: styles),
-              Text(
-                '${tutorInfoState.tutorInfo['correo']}',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Color(colors.onPrimaryContainer.value)),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text('Contraseña: ', style: styles),
-              Text(
-                '${tutorInfoState.tutorInfo['contraseña']}',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Color(colors.onPrimaryContainer.value)),
-              ),
-            ],
-          ),
-        ));
+      )),
+    );
   }
 }

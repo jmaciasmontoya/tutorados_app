@@ -14,6 +14,7 @@ class AcademicDataSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextField(
+          isFormStudent: true,
           label: 'Preparatoria de origen',
           errorMessage: (academicProvider.messageHighSchool != '')
               ? academicProvider.messageHighSchool
@@ -25,6 +26,7 @@ class AcademicDataSection extends ConsumerWidget {
           height: 20,
         ),
         CustomTextField(
+          isFormStudent: true,
           label: 'Promedio general',
           errorMessage: (academicProvider.messageAverage != '')
               ? academicProvider.messageAverage
@@ -46,6 +48,7 @@ class AcademicDataSection extends ConsumerWidget {
           height: 20,
         ),
         CustomTextField(
+          isFormStudent: true,
           keyboardType: TextInputType.number,
           onFieldSubmitted: (_) => ref.read(academicDataProvider.notifier).onFormSubmit(),
           label: 'Puntuación',

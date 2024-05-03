@@ -13,7 +13,7 @@ class RegisterScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Color(colors.background.value),
+        backgroundColor: Color(colors.surface.value),
         body: Center(
           child: SingleChildScrollView(
             child: Padding(
@@ -64,6 +64,9 @@ class RegisterFrom extends ConsumerWidget {
     return Form(
       child: Column(
         children: [
+          const SizedBox(
+            height: 10,
+          ),
           CustomTextField(
             label: 'Nombre',
             onChanged: ref.read(registerFormProvider.notifier).onNameChange,
@@ -85,7 +88,7 @@ class RegisterFrom extends ConsumerWidget {
             height: 10,
           ),
           CustomTextField(
-            label: 'Matrícula',
+            label: 'Clave o matrícula',
             onChanged: ref
                 .read(registerFormProvider.notifier)
                 .onStudentEnrollmentChanged,
@@ -165,6 +168,41 @@ class RegisterFrom extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class IsTutorOption extends ConsumerWidget {
+  const IsTutorOption({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final medicalProvider = ref.watch(medicalDataProvider);
+    final colors = Theme.of(context).colorScheme;
+
+    return SegmentedButton(
+      style: SegmentedButton.styleFrom(
+        selectedBackgroundColor: Color(colors.primary.value),
+        selectedForegroundColor: Color(colors.onPrimary.value),
+        shape: (ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(12))),
+      ),
+      segments: const [
+        ButtonSegment(
+            value: false,
+            label: Text(
+              'No',
+              style: TextStyle(fontSize: 16),
+            )),
+        ButtonSegment(
+            value: true, label: Text('Sí', style: TextStyle(fontSize: 16))),
+      ],
+      selected: {medicalProvider.disease},
+      onSelectionChanged: (newSelection) {
+        ref
+            .read(medicalDataProvider.notifier)
+            .diseaseIsSelected(newSelection.first);
+      },
     );
   }
 }

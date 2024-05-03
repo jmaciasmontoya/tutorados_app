@@ -338,33 +338,103 @@ class StudentData extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Edad:  ${student?.age ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Edad: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: '${student?.age}',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Género:  ${student?.gender ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Género: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.gender ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Religión:  ${student?.religion ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Religión: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.religion ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Actividad deportiva:  ${student?.activity ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Actividad deportiva: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.activity ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Fecha de nacimiento:  ${student?.birthdate ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Fecha de nacimiento: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.birthdate ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Lugar de nacimiento:  ${student?.placeOfBirth ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Lugar de nacimiento: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.placeOfBirth ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Tutor o Padre de familia:  ${student?.tutorOrParent ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Tutor o Padre de familia: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.tutorOrParent ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -380,27 +450,89 @@ class ContactData extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Celular: ${student?.cellPhoneNumber ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Celular: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.cellPhoneNumber ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Tel. Casa: ${student?.homePhoneNumber ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Tel. Casa: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.homePhoneNumber ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text('Correo: ${student?.email ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text(
-          'Correo del tutor:  ${student?.tutorsEmail ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Correo: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.email ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Domicilio actual: ${student?.currentAddress ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Correo del tutor: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.tutorsEmail ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          'Domicilio Familiar, ${student?.homeAddress ?? 'Sin informacion'}',
-          style: const TextStyle(fontSize: 16),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Domicilio actual: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.currentAddress ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Domicilio Familiar: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.homeAddress ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -416,20 +548,90 @@ class MedicalData extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-            'Número de Seguro social: ${student?.socialSecurityNumber ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text('Tipo de sangre: ${student?.bloodType ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text('Enfermedad: ${student?.disease ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text('Discapacidad: ${student?.disability ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text('Alergia: ${student?.allergy ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text(
-            'Consumo de sustancias toxicas: ${student?.sustances ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Número de Seguro social: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.socialSecurityNumber ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Tipo de sangre: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.bloodType ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Enfermedad: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.disease ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Discapacidad: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.disability ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Alergia: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.allergy ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Consumo de sustancias toxicas: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.sustances ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -444,14 +646,42 @@ class AcademicData extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-            'Preparatoria de origen: ${student?.highSchool ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text('Promedio: ${student?.average ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text(
-            'Puntuación de examen CENEVAL: ${student?.scoreCeneval ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                  text: 'Preparatoria de origen: ',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: student?.highSchool ?? 'Sin informacion',
+                  style: const TextStyle(fontSize: 16)),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                  text: 'Promedio: ',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: '${student?.average}',
+                  style: const TextStyle(fontSize: 16)),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                  text: 'Puntuación de examen CENEVAL: ',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: '${student?.scoreCeneval}',
+                  style: const TextStyle(fontSize: 16)),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -466,13 +696,48 @@ class SocioEconomicData extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Trabajo: ${student?.workplace ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text(
-            '¿Cuenta con apoyo económico?: ${student?.economicalSupport ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
-        Text('Vive con: ${student?.livesWith ?? 'Sin informacion'}',
-            style: const TextStyle(fontSize: 16)),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Trabajo: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.workplace ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: '¿Cuenta con apoyo económico?: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.economicalSupport ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(
+                text: 'Vive con: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: student?.livesWith ?? 'Sin informacion',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

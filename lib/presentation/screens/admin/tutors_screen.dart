@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tutorados_app/presentation/providers/providers.dart';
@@ -20,7 +21,7 @@ class TutorsScreen extends StatelessWidget {
           color: Color(colors.onPrimary.value),
         ),
         label: Text(
-          'Registrar tutor',
+          'Nuevo tutor',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Color(colors.onPrimary.value)),
@@ -53,7 +54,7 @@ class TutorsView extends ConsumerWidget {
           Expanded(
               child: TutorsSection(
             tutors: tutorsState.tutors,
-          ))
+          )),
         ]));
   }
 }
@@ -87,7 +88,7 @@ class TutorsSection extends ConsumerWidget {
             itemBuilder: (context, index) {
               final tutor = tutors[index];
               return GestureDetector(
-                onTap: () => {},
+                onTap: () => {_copyTutorInfoToClipboard(tutor, context)},
                 child: CardTutor(
                   tutorId: tutor['usuario_id'],
                   name: tutor['nombre'],
@@ -97,6 +98,13 @@ class TutorsSection extends ConsumerWidget {
               );
             },
           );
+  }
+
+  void _copyTutorInfoToClipboard(
+      Map<String, dynamic> tutor, BuildContext context) {
+    String clipboardText =
+        "${tutor['usuario_id']}\n${tutor['nombre']} ${tutor['apellido']}\n${tutor['correo']}";
+    Clipboard.setData(ClipboardData(text: clipboardText));
   }
 }
 
@@ -116,41 +124,49 @@ class CardTutor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsetsDirectional.only(bottom: 10),
-      width: double.maxFinite,
-      decoration: BoxDecoration(
-          color: Color(colors.primaryContainer.value),
-          borderRadius: BorderRadius.circular(12)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                tutorId,
-                style: TextStyle(
-                    color: Color(colors.secondary.value),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16),
+  final colors = Theme.of(context).colorScheme;
+  return Container(
+    padding: const EdgeInsets.all(10),
+    margin: const EdgeInsetsDirectional.only(bottom: 10),
+    width: double.maxFinite,
+    decoration: BoxDecoration(
+      color: Color(colors.primaryContainer.value),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              tutorId,
+              style: TextStyle(
+                color: Color(colors.secondary.value),
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
               ),
-              Text(
-                '$name $lastName',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Color(colors.onPrimaryContainer.value)),
+            ),
+            Text(
+              '$name $lastName',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(colors.onPrimaryContainer.value),
               ),
-              Text(email,
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Color(colors.onPrimaryContainer.value))),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+            Text(
+              email,
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(colors.onPrimaryContainer.value),
+              ),
+            ),
+          ],
+        ),
+        const Spacer(), // Esto empujará el icono de copiar hacia la derecha
+        Icon(Icons.copy, color: colors.onPrimaryContainer,),
+      ],
+    ),
+  );
+}
+
 }

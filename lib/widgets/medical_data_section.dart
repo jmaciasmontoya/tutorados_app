@@ -15,6 +15,7 @@ class MedicalDataSection extends ConsumerWidget {
       children: [
         CustomTextField(
           label: 'Num. Seguro social',
+          isFormStudent: true,
           keyboardType: TextInputType.number,
           onChanged:
               ref.read(medicalDataProvider.notifier).onSocialNumberChanged,
@@ -27,6 +28,7 @@ class MedicalDataSection extends ConsumerWidget {
         ),
         CustomTextField(
           label: 'Tipo de sangre',
+          isFormStudent: true,
           onChanged: ref.read(medicalDataProvider.notifier).onBloodTypeChanged,
           errorMessage: medicalProvider.isFormPosted
               ? medicalProvider.bloodType.errorMessage
@@ -52,6 +54,7 @@ class MedicalDataSection extends ConsumerWidget {
         medicalProvider.disease
             ? CustomTextField(
                 label: '¿Cúal?',
+                isFormStudent: true,
                 onChanged:
                     ref.read(medicalDataProvider.notifier).onDiseaseChanged,
               )
@@ -76,6 +79,7 @@ class MedicalDataSection extends ConsumerWidget {
         medicalProvider.allergy
             ? CustomTextField(
                 label: '¿Cúal?',
+                isFormStudent: true,
                 onChanged:
                     ref.read(medicalDataProvider.notifier).onAllergyChanged,
               )

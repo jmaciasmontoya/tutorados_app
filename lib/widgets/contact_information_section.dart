@@ -14,6 +14,7 @@ class ContactInformationSection extends ConsumerWidget {
     return Column(
       children: [
         CustomTextField(
+          isFormStudent: true,
           label: 'Domicilio actual',
           onChanged:
               ref.read(contactDataProvider.notifier).onCurrentAddressChanged,
@@ -25,6 +26,7 @@ class ContactInformationSection extends ConsumerWidget {
           height: 20,
         ),
         CustomTextField(
+          isFormStudent: true,
           label: 'Domicilio familiar',
           onChanged:
               ref.read(contactDataProvider.notifier).onHomeAddressChanged,
@@ -36,6 +38,7 @@ class ContactInformationSection extends ConsumerWidget {
           height: 20,
         ),
         CustomTextField(
+          isFormStudent: true,
           label: 'Celular',
           keyboardType: TextInputType.phone,
           onChanged:
@@ -48,6 +51,7 @@ class ContactInformationSection extends ConsumerWidget {
           height: 20,
         ),
         CustomTextField(
+          isFormStudent: true,
           label: 'Tel. Casa',
           keyboardType: TextInputType.phone,
           onChanged:
@@ -60,6 +64,7 @@ class ContactInformationSection extends ConsumerWidget {
           height: 20,
         ),
         CustomTextField(
+          isFormStudent: true,
           label: 'Correo',
           keyboardType: TextInputType.emailAddress,
           initialValue: userData.user!.email,
@@ -72,6 +77,7 @@ class ContactInformationSection extends ConsumerWidget {
           height: 20,
         ),
         CustomTextField(
+          isFormStudent: true,
           label: 'Correo del tutor',
           keyboardType: TextInputType.emailAddress,
           onChanged:

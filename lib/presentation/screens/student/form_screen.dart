@@ -59,7 +59,7 @@ class FormScreen extends ConsumerWidget {
                           lineHeight: 6,
                           percent: formState.loadingBar,
                           progressColor: Color(colors.primary.value),
-                          backgroundColor: Color(colors.onSurface.value),
+                          backgroundColor: Color(colors.tertiary.value),
                           barRadius: const Radius.circular(10),
                           trailing: Text(
                             '${formState.percentageCompleted}%',
