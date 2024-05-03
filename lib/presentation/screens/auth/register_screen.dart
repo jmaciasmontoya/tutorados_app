@@ -88,7 +88,7 @@ class RegisterFrom extends ConsumerWidget {
             height: 10,
           ),
           CustomTextField(
-            label: 'Clave o matrícula',
+            label: 'Código o matrícula',
             onChanged: ref
                 .read(registerFormProvider.notifier)
                 .onStudentEnrollmentChanged,
