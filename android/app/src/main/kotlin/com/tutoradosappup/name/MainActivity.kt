@@ -1,4 +1,4 @@
-package com.example.tutorados_app
+package com.tutoradosappup.name
 
 import io.flutter.embedding.android.FlutterActivity
 
